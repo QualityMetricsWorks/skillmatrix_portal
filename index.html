@@ -49,7 +49,7 @@
           <span class="status-dot"></span>
           <div>
             <strong>Sistema activo</strong>
-            <small>Versión 0.2</small>
+            <small>Versión inicial 0.1</small>
           </div>
         </div>
       </div>
@@ -63,13 +63,10 @@
         </div>
 
         <div class="topbar-actions">
-          <div class="search-wrapper">
-            <label class="search-box">
-              <span>⌕</span>
-              <input id="globalSearch" type="search" placeholder="Buscar operador o máquina..." autocomplete="off" />
-            </label>
-            <div id="searchResults" class="search-results" hidden></div>
-          </div>
+          <label class="search-box">
+            <span>⌕</span>
+            <input id="globalSearch" type="search" placeholder="Buscar operador o máquina..." />
+          </label>
           <button class="primary-btn" id="addOperatorBtn">+ Nuevo operador</button>
         </div>
       </header>
@@ -79,6 +76,7 @@
           <div>
             <span class="hero-label">CNC SKILLS MANAGEMENT</span>
             <h3>Construye un equipo flexible, competente y confiable.</h3>
+            <p>Visualiza cobertura, brechas de habilidad y prioridades de capacitación desde un solo lugar.</p>
           </div>
           <div class="hero-score">
             <span>Competencia global</span>
@@ -87,55 +85,28 @@
           </div>
         </div>
 
-        <div class="stats-grid level-stats-grid">
-          <article class="stat-card operator-stat">
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-label">Máquinas activas</span>
+            <strong id="machineCount">14</strong>
+            <small>Equipo productivo registrado</small>
+          </article>
+          <article class="stat-card">
             <span class="stat-label">Operadores</span>
             <strong id="operatorCount">6</strong>
-            <small>Personal activo registrado</small>
+            <small>Personal activo</small>
           </article>
-          <article class="stat-card level-stat level-stat-0">
-            <span class="stat-label">Nivel 0</span>
-            <strong id="level0Count">0</strong>
-            <small>Asignaciones no entrenadas</small>
-          </article>
-          <article class="stat-card level-stat level-stat-1">
-            <span class="stat-label">Nivel 1</span>
-            <strong id="level1Count">0</strong>
-            <small>Asignaciones en entrenamiento</small>
-          </article>
-          <article class="stat-card level-stat level-stat-2">
-            <span class="stat-label">Nivel 2</span>
-            <strong id="level2Count">0</strong>
-            <small>Operación con supervisión</small>
-          </article>
-          <article class="stat-card level-stat level-stat-3">
-            <span class="stat-label">Nivel 3</span>
-            <strong id="level3Count">0</strong>
-            <small>Asignaciones certificadas</small>
-          </article>
-          <article class="stat-card level-stat level-stat-4">
-            <span class="stat-label">Nivel 4</span>
-            <strong id="level4Count">0</strong>
-            <small>Expertos o entrenadores</small>
+          <article class="stat-card">
+            <span class="stat-label">Certificados</span>
+            <strong id="certifiedCount">3</strong>
+            <small>Nivel 3 o superior</small>
           </article>
           <article class="stat-card warning">
             <span class="stat-label">Brechas críticas</span>
-            <strong id="criticalGapCount">0</strong>
-            <small>Máquinas con nivel promedio menor a 2</small>
+            <strong id="criticalGapCount">5</strong>
+            <small>Requieren plan de acción</small>
           </article>
         </div>
-
-        <article class="panel distribution-panel">
-          <div class="panel-header">
-            <div>
-              <span class="section-kicker">Distribución real</span>
-              <h3>Asignaciones operador–máquina por nivel</h3>
-            </div>
-            <span id="assignmentTotal" class="total-badge">0 asignaciones</span>
-          </div>
-          <div id="levelDistribution" class="level-distribution"></div>
-          <p class="distribution-note">Cada registro representa el nivel de un operador en una máquina específica; una misma persona puede aparecer en distintos niveles.</p>
-        </article>
 
         <div class="dashboard-grid">
           <article class="panel">
@@ -242,11 +213,6 @@
           </div>
         </div>
         <div id="trainingTable" class="training-list"></div>
-      </section>
-
-      <section id="operatorProfile" class="view">
-        <button class="back-btn" id="backToOperators">← Volver a operadores</button>
-        <div id="operatorProfileContent"></div>
       </section>
     </main>
   </div>
