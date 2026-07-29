@@ -620,6 +620,14 @@
               Editar operador
             </button>
 
+            <button
+              id="deleteOperatorBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              Eliminar operador
+            </button>
+
           </div>
 
         </div>
@@ -866,11 +874,14 @@
 
         <div>
 
-          <span class="section-kicker">
+          <span
+            id="operatorDialogKicker"
+            class="section-kicker"
+          >
             Alta de personal
           </span>
 
-          <h3>
+          <h3 id="operatorDialogTitle">
             Nuevo operador
           </h3>
 
@@ -885,6 +896,11 @@
         </button>
 
       </div>
+
+      <input
+        type="hidden"
+        id="editingOperatorId"
+      />
 
       <div class="form-grid">
 
@@ -954,6 +970,68 @@
 
             <option>
               Turno C
+            </option>
+
+          </select>
+
+        </label>
+
+        <label>
+
+          Área
+
+          <input
+            id="operatorArea"
+            required
+            placeholder="Ej. Maquinado CNC"
+          />
+
+        </label>
+
+        <label>
+
+          Supervisor
+
+          <input
+            id="operatorSupervisor"
+            required
+            placeholder="Ej. María López"
+          />
+
+        </label>
+
+        <label>
+
+          Fecha de ingreso
+
+          <input
+            id="operatorEntryDate"
+            type="date"
+            required
+          />
+
+        </label>
+
+        <label>
+
+          Estatus
+
+          <select id="operatorStatus">
+
+            <option value="Activo">
+              Activo
+            </option>
+
+            <option value="En capacitación">
+              En capacitación
+            </option>
+
+            <option value="Ausencia">
+              Ausencia
+            </option>
+
+            <option value="Inactivo">
+              Inactivo
             </option>
 
           </select>
