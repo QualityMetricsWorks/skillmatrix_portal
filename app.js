@@ -1159,6 +1159,10 @@ function renderOperatorProfile(operator) {
   const profileRole = getElement("profileRole");
   const profileShift = getElement("profileShift");
   const profileScore = getElement("profileScore");
+  const profileArea = getElement("profileArea");
+  const profileSupervisor = getElement("profileSupervisor");
+  const profileEntryDate = getElement("profileEntryDate");
+  const profileStatus = getElement("profileStatus");
   const profileLevelSummary = getElement("profileLevelSummary");
   const profileMachineSkills = getElement("profileMachineSkills");
   const profileTraining = getElement("profileTraining");
@@ -1186,6 +1190,22 @@ function renderOperatorProfile(operator) {
 
   if (profileScore) {
     profileScore.textContent = `${percentage}%`;
+  }
+
+  if (profileArea) {
+    profileArea.textContent = operator.area || "Sin registrar";
+  }
+
+  if (profileSupervisor) {
+    profileSupervisor.textContent = operator.supervisor || "Por asignar";
+  }
+
+  if (profileEntryDate) {
+    profileEntryDate.textContent = formatDate(operator.entryDate);
+  }
+
+  if (profileStatus) {
+    profileStatus.textContent = operator.status || "Activo";
   }
 
   if (profileLevelSummary) {
@@ -1494,21 +1514,157 @@ if (machineFamilyFilter) {
 }
 
 /* =========================================================
-   ALTA DE OPERADOR
+   CREAR, EDITAR Y ELIMINAR OPERADOR
 ========================================================= */
 
 const operatorDialog = getElement("operatorDialog");
 const addOperatorButton = getElement("addOperatorBtn2");
 const operatorForm = getElement("operatorForm");
+const editOperatorButton = getElement("editOperatorBtn");
+const deleteOperatorButton = getElement("deleteOperatorBtn");
 
-if (addOperatorButton && operatorDialog) {
-  addOperatorButton.addEventListener("click", () => {
-    if (operatorForm) {
-      operatorForm.reset();
-    }
+const editingOperatorId = getElement("editingOperatorId");
+const operatorDialogKicker = getElement("operatorDialogKicker");
+const operatorDialogTitle = getElement("operatorDialogTitle");
+const saveOperatorButton = getElement("saveOperatorBtn");
 
-    operatorDialog.showModal();
-  });
+function getOperatorFormValues() {
+  return {
+    id: getElement("operatorId")?.value.trim() || "",
+    name: getElement("operatorName")?.value.trim() || "",
+    role: getElement("operatorRole")?.value || "Operador CNC",
+    shift: getElement("operatorShift")?.value || "Turno A",
+    area: getElement("operatorArea")?.value.trim() || "Maquinado CNC",
+    supervisor:
+      getElement("operatorSupervisor")?.value.trim() || "Por asignar",
+    entryDate:
+      getElement("operatorEntryDate")?.value ||
+      new Date().toISOString().slice(0, 10),
+    status: getElement("operatorStatus")?.value || "Activo"
+  };
+}
+
+function setOperatorFormValues(operator) {
+  const operatorName = getElement("operatorName");
+  const operatorId = getElement("operatorId");
+  const operatorRole = getElement("operatorRole");
+  const operatorShift = getElement("operatorShift");
+  const operatorArea = getElement("operatorArea");
+  const operatorSupervisor = getElement("operatorSupervisor");
+  const operatorEntryDate = getElement("operatorEntryDate");
+  const operatorStatus = getElement("operatorStatus");
+
+  if (operatorName) operatorName.value = operator?.name || "";
+  if (operatorId) operatorId.value = operator?.id || "";
+  if (operatorRole) operatorRole.value = operator?.role || "Operador CNC";
+  if (operatorShift) operatorShift.value = operator?.shift || "Turno A";
+  if (operatorArea) operatorArea.value = operator?.area || "Maquinado CNC";
+  if (operatorSupervisor) {
+    operatorSupervisor.value = operator?.supervisor || "";
+  }
+  if (operatorEntryDate) {
+    operatorEntryDate.value =
+      operator?.entryDate || new Date().toISOString().slice(0, 10);
+  }
+  if (operatorStatus) operatorStatus.value = operator?.status || "Activo";
+}
+
+function openCreateOperatorDialog() {
+  if (!operatorDialog || !operatorForm) {
+    return;
+  }
+
+  operatorForm.reset();
+  setOperatorFormValues(null);
+
+  if (editingOperatorId) {
+    editingOperatorId.value = "";
+  }
+
+  const operatorIdInput = getElement("operatorId");
+
+  if (operatorIdInput) {
+    operatorIdInput.disabled = false;
+  }
+
+  if (operatorDialogKicker) {
+    operatorDialogKicker.textContent = "Alta de personal";
+  }
+
+  if (operatorDialogTitle) {
+    operatorDialogTitle.textContent = "Nuevo operador";
+  }
+
+  if (saveOperatorButton) {
+    saveOperatorButton.textContent = "Guardar operador";
+  }
+
+  operatorDialog.showModal();
+}
+
+function openEditOperatorDialog(operatorId) {
+  if (!operatorDialog || !operatorForm) {
+    return;
+  }
+
+  const operator = state.operators.find(item => item.id === operatorId);
+
+  if (!operator) {
+    window.alert("No se encontró el operador seleccionado.");
+    return;
+  }
+
+  setOperatorFormValues(operator);
+
+  if (editingOperatorId) {
+    editingOperatorId.value = operator.id;
+  }
+
+  const operatorIdInput = getElement("operatorId");
+
+  if (operatorIdInput) {
+    operatorIdInput.disabled = true;
+  }
+
+  if (operatorDialogKicker) {
+    operatorDialogKicker.textContent = "Actualización de personal";
+  }
+
+  if (operatorDialogTitle) {
+    operatorDialogTitle.textContent = "Editar operador";
+  }
+
+  if (saveOperatorButton) {
+    saveOperatorButton.textContent = "Guardar cambios";
+  }
+
+  operatorDialog.showModal();
+}
+
+function closeOperatorDialog() {
+  if (!operatorDialog || !operatorForm) {
+    return;
+  }
+
+  operatorForm.reset();
+
+  if (editingOperatorId) {
+    editingOperatorId.value = "";
+  }
+
+  const operatorIdInput = getElement("operatorId");
+
+  if (operatorIdInput) {
+    operatorIdInput.disabled = false;
+  }
+}
+
+if (addOperatorButton) {
+  addOperatorButton.addEventListener("click", openCreateOperatorDialog);
+}
+
+if (operatorDialog) {
+  operatorDialog.addEventListener("close", closeOperatorDialog);
 }
 
 if (operatorForm && operatorDialog) {
@@ -1521,66 +1677,134 @@ if (operatorForm && operatorDialog) {
 
     event.preventDefault();
 
-    const operatorId = getElement("operatorId")?.value.trim();
-    const operatorName = getElement("operatorName")?.value.trim();
-    const operatorRole = getElement("operatorRole")?.value;
-    const operatorShift = getElement("operatorShift")?.value;
+    const values = getOperatorFormValues();
+    const currentEditingId = editingOperatorId?.value.trim() || "";
+    const isEditing = Boolean(currentEditingId);
 
-    if (!operatorId || !operatorName) {
-      window.alert(
-        "Ingresa el nombre y el número de empleado."
-      );
-
+    if (!values.id || !values.name) {
+      window.alert("Ingresa el nombre y el número de empleado.");
       return;
     }
 
-    const duplicate = state.operators.some(operator => {
-      return (
-        normalizeText(operator.id) ===
-        normalizeText(operatorId)
-      );
-    });
-
-    if (duplicate) {
+    if (!values.area || !values.supervisor || !values.entryDate) {
       window.alert(
-        "Ya existe un operador con ese número de empleado."
+        "Completa el área, supervisor y fecha de ingreso del operador."
       );
-
       return;
     }
 
-    const scores = {};
+    if (isEditing) {
+      const operatorIndex = state.operators.findIndex(operator => {
+        return operator.id === currentEditingId;
+      });
 
-    state.machines.forEach(machine => {
-      scores[machine] = 0;
-    });
+      if (operatorIndex === -1) {
+        window.alert("No se encontró el operador que deseas editar.");
+        return;
+      }
 
-    const newOperator = {
-      id: operatorId,
-      name: operatorName,
-      role: operatorRole || "Operador CNC",
-      shift: operatorShift || "Turno A",
-      area: "Maquinado CNC",
-      supervisor: "Por asignar",
-      entryDate: new Date().toISOString().slice(0, 10),
-      status: "Activo",
-      scores,
-      certifications: {},
-      trainingHistory: [],
-      developmentPlan: []
-    };
+      const existingOperator = state.operators[operatorIndex];
 
-    state.operators.push(newOperator);
+      state.operators[operatorIndex] = {
+        ...existingOperator,
+        name: values.name,
+        role: values.role,
+        shift: values.shift,
+        area: values.area,
+        supervisor: values.supervisor,
+        entryDate: values.entryDate,
+        status: values.status
+      };
 
-    /*
-      Esta línea es la que conserva al operador
-      después de recargar la página.
-    */
+      state.selectedOperatorId = currentEditingId;
+    } else {
+      const duplicate = state.operators.some(operator => {
+        return normalizeText(operator.id) === normalizeText(values.id);
+      });
+
+      if (duplicate) {
+        window.alert(
+          "Ya existe un operador con ese número de empleado."
+        );
+        return;
+      }
+
+      const scores = {};
+
+      state.machines.forEach(machine => {
+        scores[machine] = 0;
+      });
+
+      const newOperator = {
+        ...values,
+        scores,
+        certifications: {},
+        trainingHistory: [],
+        developmentPlan: []
+      };
+
+      state.operators.push(newOperator);
+      state.selectedOperatorId = newOperator.id;
+    }
+
     saveState();
-
-    operatorForm.reset();
     operatorDialog.close();
+    renderAll();
 
+    if (isEditing) {
+      const updatedOperator = state.operators.find(operator => {
+        return operator.id === currentEditingId;
+      });
+
+      if (updatedOperator) {
+        renderOperatorProfile(updatedOperator);
+        setView("operatorProfile");
+      }
+    } else {
+      setView("operators");
+    }
+  });
+}
+
+if (editOperatorButton) {
+  editOperatorButton.addEventListener("click", () => {
+    if (!state.selectedOperatorId) {
+      window.alert("Selecciona primero un operador.");
+      return;
+    }
+
+    openEditOperatorDialog(state.selectedOperatorId);
+  });
+}
+
+if (deleteOperatorButton) {
+  deleteOperatorButton.addEventListener("click", () => {
+    const operator = state.operators.find(item => {
+      return item.id === state.selectedOperatorId;
+    });
+
+    if (!operator) {
+      window.alert("No se encontró el operador seleccionado.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `¿Eliminar a ${operator.name} (${operator.id})?\n\n` +
+        "Esta acción eliminará también sus niveles y registros asociados."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    state.operators = state.operators.filter(item => {
+      return item.id !== operator.id;
+    });
+
+    state.selectedOperatorId = null;
+    state.previousView = "operators";
+
+    saveState();
     renderAll();
     setView("operators");
   });
@@ -1641,20 +1865,6 @@ if (backToOperatorsButton) {
         : "operators";
 
     setView(returnView);
-  });
-}
-
-/* =========================================================
-   EDICIÓN DEL OPERADOR
-========================================================= */
-
-const editOperatorButton = getElement("editOperatorBtn");
-
-if (editOperatorButton) {
-  editOperatorButton.addEventListener("click", () => {
-    window.alert(
-      "La edición de operadores se habilitará en la siguiente etapa."
-    );
   });
 }
 
