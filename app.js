@@ -227,6 +227,8 @@ function loadState() {
 
 let state = loadState();
 
+let operatorFormMode = "create";
+
 function saveState() {
   try {
     const persistentState = {
@@ -1158,6 +1160,10 @@ function renderOperatorProfile(operator) {
   const profileEmployeeId = getElement("profileEmployeeId");
   const profileRole = getElement("profileRole");
   const profileShift = getElement("profileShift");
+  const profileArea = getElement("profileArea");
+  const profileSupervisor = getElement("profileSupervisor");
+  const profileEntryDate = getElement("profileEntryDate");
+  const profileStatus = getElement("profileStatus");
   const profileScore = getElement("profileScore");
   const profileLevelSummary = getElement("profileLevelSummary");
   const profileMachineSkills = getElement("profileMachineSkills");
@@ -1180,8 +1186,23 @@ function renderOperatorProfile(operator) {
   }
 
   if (profileShift) {
-    profileShift.textContent =
-      `${operator.shift} · ${operator.area} · ${operator.status}`;
+    profileShift.textContent = `Turno: ${operator.shift}`;
+  }
+
+  if (profileArea) {
+    profileArea.textContent = operator.area;
+  }
+
+  if (profileSupervisor) {
+    profileSupervisor.textContent = operator.supervisor;
+  }
+
+  if (profileEntryDate) {
+    profileEntryDate.textContent = formatDate(operator.entryDate);
+  }
+
+  if (profileStatus) {
+    profileStatus.textContent = operator.status;
   }
 
   if (profileScore) {
@@ -1494,21 +1515,151 @@ if (machineFamilyFilter) {
 }
 
 /* =========================================================
-   ALTA DE OPERADOR
+   CRUD DE OPERADORES
 ========================================================= */
 
 const operatorDialog = getElement("operatorDialog");
 const addOperatorButton = getElement("addOperatorBtn2");
 const operatorForm = getElement("operatorForm");
 
-if (addOperatorButton && operatorDialog) {
-  addOperatorButton.addEventListener("click", () => {
-    if (operatorForm) {
-      operatorForm.reset();
-    }
+const editingOperatorIdInput = getElement("editingOperatorId");
+const operatorIdInput = getElement("operatorId");
+const operatorNameInput = getElement("operatorName");
+const operatorRoleInput = getElement("operatorRole");
+const operatorShiftInput = getElement("operatorShift");
+const operatorAreaInput = getElement("operatorArea");
+const operatorSupervisorInput = getElement("operatorSupervisor");
+const operatorEntryDateInput = getElement("operatorEntryDate");
+const operatorStatusInput = getElement("operatorStatus");
 
-    operatorDialog.showModal();
+const operatorDialogTitle = getElement("operatorDialogTitle");
+const operatorDialogKicker = getElement("operatorDialogKicker");
+const saveOperatorButton = getElement("saveOperatorBtn");
+
+function setOperatorDialogText(mode) {
+  const isEdit = mode === "edit";
+
+  if (operatorDialogTitle) {
+    operatorDialogTitle.textContent =
+      isEdit ? "Editar operador" : "Nuevo operador";
+  }
+
+  if (operatorDialogKicker) {
+    operatorDialogKicker.textContent =
+      isEdit ? "Actualización de personal" : "Alta de personal";
+  }
+
+  if (saveOperatorButton) {
+    saveOperatorButton.textContent =
+      isEdit ? "Guardar cambios" : "Guardar operador";
+  }
+}
+
+function openCreateOperatorDialog() {
+  if (!operatorDialog || !operatorForm) {
+    return;
+  }
+
+  operatorFormMode = "create";
+  operatorForm.reset();
+
+  if (editingOperatorIdInput) {
+    editingOperatorIdInput.value = "";
+  }
+
+  if (operatorIdInput) {
+    operatorIdInput.disabled = false;
+    operatorIdInput.value = "";
+  }
+
+  if (operatorAreaInput) {
+    operatorAreaInput.value = "Maquinado CNC";
+  }
+
+  if (operatorSupervisorInput) {
+    operatorSupervisorInput.value = "Por asignar";
+  }
+
+  if (operatorEntryDateInput) {
+    operatorEntryDateInput.value =
+      new Date().toISOString().slice(0, 10);
+  }
+
+  if (operatorStatusInput) {
+    operatorStatusInput.value = "Activo";
+  }
+
+  setOperatorDialogText("create");
+  operatorDialog.showModal();
+
+  window.setTimeout(() => {
+    operatorNameInput?.focus();
+  }, 0);
+}
+
+function openEditOperatorDialog(operatorId) {
+  if (!operatorDialog || !operatorForm) {
+    return;
+  }
+
+  const operator = state.operators.find(item => {
+    return item.id === operatorId;
   });
+
+  if (!operator) {
+    window.alert("No fue posible encontrar al operador seleccionado.");
+    return;
+  }
+
+  operatorFormMode = "edit";
+
+  if (editingOperatorIdInput) {
+    editingOperatorIdInput.value = operator.id;
+  }
+
+  if (operatorNameInput) {
+    operatorNameInput.value = operator.name;
+  }
+
+  if (operatorIdInput) {
+    operatorIdInput.value = operator.id;
+    operatorIdInput.disabled = true;
+  }
+
+  if (operatorRoleInput) {
+    operatorRoleInput.value = operator.role;
+  }
+
+  if (operatorShiftInput) {
+    operatorShiftInput.value = operator.shift;
+  }
+
+  if (operatorAreaInput) {
+    operatorAreaInput.value = operator.area;
+  }
+
+  if (operatorSupervisorInput) {
+    operatorSupervisorInput.value = operator.supervisor;
+  }
+
+  if (operatorEntryDateInput) {
+    operatorEntryDateInput.value = operator.entryDate;
+  }
+
+  if (operatorStatusInput) {
+    operatorStatusInput.value = operator.status;
+  }
+
+  setOperatorDialogText("edit");
+  operatorDialog.showModal();
+
+  window.setTimeout(() => {
+    operatorNameInput?.focus();
+  }, 0);
+}
+
+if (addOperatorButton) {
+  addOperatorButton.addEventListener("click", openCreateOperatorDialog);
 }
 
 if (operatorForm && operatorDialog) {
@@ -1521,68 +1672,129 @@ if (operatorForm && operatorDialog) {
 
     event.preventDefault();
 
-    const operatorId = getElement("operatorId")?.value.trim();
-    const operatorName = getElement("operatorName")?.value.trim();
-    const operatorRole = getElement("operatorRole")?.value;
-    const operatorShift = getElement("operatorShift")?.value;
+    const operatorId = operatorIdInput?.value.trim() || "";
+    const operatorName = operatorNameInput?.value.trim() || "";
+    const operatorRole =
+      operatorRoleInput?.value || "Operador CNC";
+    const operatorShift =
+      operatorShiftInput?.value || "Turno A";
+    const operatorArea =
+      operatorAreaInput?.value.trim() || "Maquinado CNC";
+    const operatorSupervisor =
+      operatorSupervisorInput?.value.trim() || "Por asignar";
+    const operatorEntryDate =
+      operatorEntryDateInput?.value ||
+      new Date().toISOString().slice(0, 10);
+    const operatorStatus =
+      operatorStatusInput?.value || "Activo";
 
     if (!operatorId || !operatorName) {
       window.alert(
         "Ingresa el nombre y el número de empleado."
       );
-
       return;
     }
 
-    const duplicate = state.operators.some(operator => {
-      return (
-        normalizeText(operator.id) ===
-        normalizeText(operatorId)
-      );
-    });
+    if (operatorFormMode === "create") {
+      const duplicate = state.operators.some(operator => {
+        return (
+          normalizeText(operator.id) === normalizeText(operatorId)
+        );
+      });
 
-    if (duplicate) {
-      window.alert(
-        "Ya existe un operador con ese número de empleado."
-      );
+      if (duplicate) {
+        window.alert(
+          "Ya existe un operador con ese número de empleado."
+        );
+        return;
+      }
 
-      return;
+      const scores = {};
+
+      state.machines.forEach(machine => {
+        scores[machine] = 0;
+      });
+
+      state.operators.push({
+        id: operatorId,
+        name: operatorName,
+        role: operatorRole,
+        shift: operatorShift,
+        area: operatorArea,
+        supervisor: operatorSupervisor,
+        entryDate: operatorEntryDate,
+        status: operatorStatus,
+        scores,
+        certifications: {},
+        trainingHistory: [],
+        developmentPlan: []
+      });
+
+      state.selectedOperatorId = null;
+    } else {
+      const editingOperatorId =
+        editingOperatorIdInput?.value.trim() || "";
+
+      const operator = state.operators.find(item => {
+        return item.id === editingOperatorId;
+      });
+
+      if (!operator) {
+        window.alert(
+          "No fue posible encontrar al operador que deseas editar."
+        );
+        return;
+      }
+
+      operator.name = operatorName;
+      operator.role = operatorRole;
+      operator.shift = operatorShift;
+      operator.area = operatorArea;
+      operator.supervisor = operatorSupervisor;
+      operator.entryDate = operatorEntryDate;
+      operator.status = operatorStatus;
+
+      state.selectedOperatorId = operator.id;
     }
 
-    const scores = {};
-
-    state.machines.forEach(machine => {
-      scores[machine] = 0;
-    });
-
-    const newOperator = {
-      id: operatorId,
-      name: operatorName,
-      role: operatorRole || "Operador CNC",
-      shift: operatorShift || "Turno A",
-      area: "Maquinado CNC",
-      supervisor: "Por asignar",
-      entryDate: new Date().toISOString().slice(0, 10),
-      status: "Activo",
-      scores,
-      certifications: {},
-      trainingHistory: [],
-      developmentPlan: []
-    };
-
-    state.operators.push(newOperator);
-
-    /*
-      Esta línea es la que conserva al operador
-      después de recargar la página.
-    */
     saveState();
+    renderAll();
 
     operatorForm.reset();
+
+    if (operatorIdInput) {
+      operatorIdInput.disabled = false;
+    }
+
+    if (editingOperatorIdInput) {
+      editingOperatorIdInput.value = "";
+    }
+
     operatorDialog.close();
 
-    renderAll();
-    setView("operators");
+    if (
+      operatorFormMode === "edit" &&
+      state.selectedOperatorId
+    ) {
+      openOperatorProfile(state.selectedOperatorId);
+    } else {
+      setView("operators");
+    }
+  });
+
+  operatorDialog.addEventListener("close", () => {
+    operatorForm.reset();
+
+    if (operatorIdInput) {
+      operatorIdInput.disabled = false;
+    }
+
+    if (editingOperatorIdInput) {
+      editingOperatorIdInput.value = "";
+    }
+
+    operatorFormMode = "create";
+    setOperatorDialogText("create");
   });
 }
 
@@ -1645,16 +1857,54 @@ if (backToOperatorsButton) {
 }
 
 /* =========================================================
-   EDICIÓN DEL OPERADOR
+   EDITAR Y ELIMINAR OPERADOR
 ========================================================= */
 
 const editOperatorButton = getElement("editOperatorBtn");
+const deleteOperatorButton = getElement("deleteOperatorBtn");
 
 if (editOperatorButton) {
   editOperatorButton.addEventListener("click", () => {
-    window.alert(
-      "La edición de operadores se habilitará en la siguiente etapa."
+    if (!state.selectedOperatorId) {
+      window.alert("Selecciona un operador para editar.");
+      return;
+    }
+
+    openEditOperatorDialog(state.selectedOperatorId);
+  });
+}
+
+if (deleteOperatorButton) {
+  deleteOperatorButton.addEventListener("click", () => {
+    const operator = state.operators.find(item => {
+      return item.id === state.selectedOperatorId;
+    });
+
+    if (!operator) {
+      window.alert("No fue posible encontrar al operador seleccionado.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `¿Deseas eliminar a ${operator.name} (${operator.id})?\n\n` +
+      "Esta acción eliminará también sus niveles de competencia " +
+      "y no se puede deshacer."
     );
+
+    if (!confirmed) {
+      return;
+    }
+
+    state.operators = state.operators.filter(item => {
+      return item.id !== operator.id;
+    });
+
+    state.selectedOperatorId = null;
+    state.previousView = "operators";
+
+    saveState();
+    renderAll();
+    setView("operators");
   });
 }
 
