@@ -1,11 +1,10 @@
 "use strict";
 
 /* =========================================================
-   CONFIGURACIÓN Y PERSISTENCIA
+   CONFIGURACIÓN
 ========================================================= */
 
-const STORAGE_KEY = "cncSkillsPortalData";
-const STORAGE_VERSION = 1;
+const STORAGE_KEY = "cncSkillsPortalData_v1";
 
 const defaultMachines = [
   "CMV-003",
@@ -24,6 +23,75 @@ const defaultMachines = [
   "TCN-012"
 ];
 
+const defaultOperators = [
+  {
+    id: "OP-001",
+    name: "Juan Pérez",
+    role: "Operador CNC",
+    shift: "Turno A",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor A",
+    entryDate: "2024-01-15",
+    status: "Activo",
+    scores: {}
+  },
+  {
+    id: "OP-002",
+    name: "Luis Martínez",
+    role: "Setup Technician",
+    shift: "Turno A",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor A",
+    entryDate: "2022-08-10",
+    status: "Activo",
+    scores: {}
+  },
+  {
+    id: "OP-003",
+    name: "Marco Rodríguez",
+    role: "Operador CNC",
+    shift: "Turno B",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor B",
+    entryDate: "2025-02-03",
+    status: "Activo",
+    scores: {}
+  },
+  {
+    id: "OP-004",
+    name: "Alejandro Torres",
+    role: "Entrenador",
+    shift: "Turno B",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor B",
+    entryDate: "2020-05-18",
+    status: "Activo",
+    scores: {}
+  },
+  {
+    id: "OP-005",
+    name: "José Hernández",
+    role: "Operador CNC",
+    shift: "Turno C",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor C",
+    entryDate: "2025-09-01",
+    status: "Activo",
+    scores: {}
+  },
+  {
+    id: "OP-006",
+    name: "Miguel Sánchez",
+    role: "Operador CNC",
+    shift: "Turno C",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor C",
+    entryDate: "2023-11-20",
+    status: "Activo",
+    scores: {}
+  }
+];
+
 const baseScoreRows = [
   [3, 3, 2, 1, 3, 2, 1, 2, 0, 0, 1, 1, 0, 0],
   [4, 4, 3, 3, 4, 3, 2, 3, 2, 2, 3, 3, 2, 2],
@@ -33,71 +101,29 @@ const baseScoreRows = [
   [3, 2, 2, 1, 3, 2, 1, 2, 1, 1, 2, 2, 1, 1]
 ];
 
-const defaultOperatorData = [
-  {
-    id: "OP-001",
-    name: "Juan Pérez",
-    role: "Operador CNC",
-    shift: "Turno A",
-    area: "Maquinado CNC",
-    supervisor: "Supervisor Turno A",
-    hireDate: "2024-01-15",
-    status: "Activo"
-  },
-  {
-    id: "OP-002",
-    name: "Luis Martínez",
-    role: "Setup Technician",
-    shift: "Turno A",
-    area: "Maquinado CNC",
-    supervisor: "Supervisor Turno A",
-    hireDate: "2023-08-21",
-    status: "Activo"
-  },
-  {
-    id: "OP-003",
-    name: "Marco Rodríguez",
-    role: "Operador CNC",
-    shift: "Turno B",
-    area: "Maquinado CNC",
-    supervisor: "Supervisor Turno B",
-    hireDate: "2024-03-11",
-    status: "Activo"
-  },
-  {
-    id: "OP-004",
-    name: "Alejandro Torres",
-    role: "Entrenador",
-    shift: "Turno B",
-    area: "Maquinado CNC",
-    supervisor: "Supervisor Turno B",
-    hireDate: "2022-06-06",
-    status: "Activo"
-  },
-  {
-    id: "OP-005",
-    name: "José Hernández",
-    role: "Operador CNC",
-    shift: "Turno C",
-    area: "Maquinado CNC",
-    supervisor: "Supervisor Turno C",
-    hireDate: "2024-05-20",
-    status: "Activo"
-  },
-  {
-    id: "OP-006",
-    name: "Miguel Sánchez",
-    role: "Operador CNC",
-    shift: "Turno C",
-    area: "Maquinado CNC",
-    supervisor: "Supervisor Turno C",
-    hireDate: "2023-11-13",
-    status: "Activo"
-  }
+const pageTitles = {
+  dashboard: "Dashboard",
+  matrix: "Matriz de habilidades",
+  operators: "Operadores",
+  machines: "Máquinas",
+  training: "Capacitación",
+  operatorProfile: "Perfil del operador"
+};
+
+const levelNames = [
+  "No entrenado",
+  "En entrenamiento",
+  "Con supervisión",
+  "Certificado",
+  "Experto / Entrenador"
 ];
 
-function createDefaultOperators() {
-  return defaultOperatorData.map((operatorData, operatorIndex) => {
+/* =========================================================
+   CREACIÓN Y CARGA DEL ESTADO
+========================================================= */
+
+function createInitialState() {
+  const operators = defaultOperators.map((operator, operatorIndex) => {
     const scores = {};
 
     defaultMachines.forEach((machine, machineIndex) => {
@@ -106,173 +132,128 @@ function createDefaultOperators() {
     });
 
     return {
-      ...operatorData,
+      ...operator,
       scores,
       certifications: {},
       trainingHistory: [],
       developmentPlan: []
     };
   });
-}
 
-function createDefaultState() {
   return {
-    version: STORAGE_VERSION,
     machines: [...defaultMachines],
-    operators: createDefaultOperators(),
-    machineSettings: {},
-    trainingPlans: [],
+    operators,
     selectedOperatorId: null,
     previousView: "dashboard"
   };
 }
 
-let state = createDefaultState();
+function normalizeStoredState(savedState) {
+  const machines =
+    Array.isArray(savedState.machines) && savedState.machines.length
+      ? savedState.machines
+          .map(machine => String(machine).trim())
+          .filter(Boolean)
+      : [...defaultMachines];
+
+  const operators = Array.isArray(savedState.operators)
+    ? savedState.operators
+        .map(operator => {
+          const scores = {};
+
+          machines.forEach(machine => {
+            const level = Number(operator.scores?.[machine] ?? 0);
+
+            scores[machine] =
+              Number.isInteger(level) && level >= 0 && level <= 4
+                ? level
+                : 0;
+          });
+
+          return {
+            id: String(operator.id ?? "").trim(),
+            name: String(operator.name ?? "").trim(),
+            role: operator.role || "Operador CNC",
+            shift: operator.shift || "Turno A",
+            area: operator.area || "Maquinado CNC",
+            supervisor: operator.supervisor || "Por asignar",
+            entryDate:
+              operator.entryDate ||
+              operator.hireDate ||
+              new Date().toISOString().slice(0, 10),
+            status: operator.status || "Activo",
+            scores,
+            certifications:
+              operator.certifications &&
+              typeof operator.certifications === "object"
+                ? operator.certifications
+                : {},
+            trainingHistory: Array.isArray(operator.trainingHistory)
+              ? operator.trainingHistory
+              : [],
+            developmentPlan: Array.isArray(operator.developmentPlan)
+              ? operator.developmentPlan
+              : []
+          };
+        })
+        .filter(operator => operator.id && operator.name)
+    : [];
+
+  return {
+    machines,
+    operators,
+    selectedOperatorId: null,
+    previousView: "dashboard"
+  };
+}
+
+function loadState() {
+  try {
+    const storedData = localStorage.getItem(STORAGE_KEY);
+
+    if (!storedData) {
+      return createInitialState();
+    }
+
+    const parsedData = JSON.parse(storedData);
+
+    return normalizeStoredState(parsedData);
+  } catch (error) {
+    console.error("Error al cargar localStorage:", error);
+
+    return createInitialState();
+  }
+}
+
+let state = loadState();
 
 function saveState() {
   try {
-    const persistentData = {
-      version: STORAGE_VERSION,
+    const persistentState = {
       machines: state.machines,
-      operators: state.operators,
-      machineSettings: state.machineSettings,
-      trainingPlans: state.trainingPlans
+      operators: state.operators
     };
 
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify(persistentData)
+      JSON.stringify(persistentState)
     );
   } catch (error) {
-    console.error(
-      "No fue posible guardar la información del portal:",
-      error
+    console.error("Error al guardar localStorage:", error);
+
+    window.alert(
+      "No fue posible guardar la información en este navegador."
     );
   }
 }
 
-function normalizeStoredOperator(operator) {
-  const normalizedOperator = {
-    id: String(operator.id ?? "").trim(),
-    name: String(operator.name ?? "").trim(),
-    role: operator.role || "Operador CNC",
-    shift: operator.shift || "Turno A",
-    area: operator.area || "Maquinado CNC",
-    supervisor: operator.supervisor || "Sin asignar",
-    hireDate: operator.hireDate || "",
-    status: operator.status || "Activo",
-    scores: {},
-    certifications:
-      operator.certifications &&
-      typeof operator.certifications === "object"
-        ? operator.certifications
-        : {},
-    trainingHistory: Array.isArray(operator.trainingHistory)
-      ? operator.trainingHistory
-      : [],
-    developmentPlan: Array.isArray(operator.developmentPlan)
-      ? operator.developmentPlan
-      : []
-  };
-
-  state.machines.forEach(machine => {
-    const storedLevel = Number(operator.scores?.[machine] ?? 0);
-
-    normalizedOperator.scores[machine] =
-      Number.isInteger(storedLevel) &&
-      storedLevel >= 0 &&
-      storedLevel <= 4
-        ? storedLevel
-        : 0;
-  });
-
-  return normalizedOperator;
+/*
+  Guarda los datos iniciales únicamente cuando todavía
+  no existe información en localStorage.
+*/
+if (!localStorage.getItem(STORAGE_KEY)) {
+  saveState();
 }
-
-function loadState() {
-  const savedData = localStorage.getItem(STORAGE_KEY);
-
-  if (!savedData) {
-    saveState();
-    return;
-  }
-
-  try {
-    const parsedData = JSON.parse(savedData);
-
-    if (
-      !parsedData ||
-      !Array.isArray(parsedData.machines) ||
-      !Array.isArray(parsedData.operators)
-    ) {
-      throw new Error("La estructura guardada no es válida.");
-    }
-
-    state.machines = [
-      ...new Set(
-        parsedData.machines
-          .map(machine => String(machine).trim())
-          .filter(Boolean)
-      )
-    ];
-
-    if (!state.machines.length) {
-      state.machines = [...defaultMachines];
-    }
-
-    state.operators = parsedData.operators
-      .map(normalizeStoredOperator)
-      .filter(operator => operator.id && operator.name);
-
-    state.machineSettings =
-      parsedData.machineSettings &&
-      typeof parsedData.machineSettings === "object"
-        ? parsedData.machineSettings
-        : {};
-
-    state.trainingPlans = Array.isArray(
-      parsedData.trainingPlans
-    )
-      ? parsedData.trainingPlans
-      : [];
-
-    state.selectedOperatorId = null;
-    state.previousView = "dashboard";
-
-    saveState();
-  } catch (error) {
-    console.error(
-      "No fue posible cargar los datos guardados. Se utilizarán los datos iniciales:",
-      error
-    );
-
-    state = createDefaultState();
-    saveState();
-  }
-}
-
-loadState();
-
-/* =========================================================
-   CONSTANTES
-========================================================= */
-
-const pageTitles = {
-  dashboard: "Dashboard",
-  matrix: "Matriz de habilidades",
-  operators: "Operadores",
-  operatorProfile: "Perfil del operador",
-  machines: "Máquinas",
-  training: "Capacitación"
-};
-
-const levelNames = {
-  0: "No entrenado",
-  1: "En entrenamiento",
-  2: "Con supervisión",
-  3: "Certificado",
-  4: "Experto / Entrenador"
-};
 
 /* =========================================================
    FUNCIONES GENERALES
@@ -283,7 +264,7 @@ function getElement(id) {
 }
 
 function familyOf(machine) {
-  return machine.split("-")[0];
+  return String(machine).split("-")[0];
 }
 
 function initials(name) {
@@ -296,24 +277,13 @@ function initials(name) {
     .toUpperCase();
 }
 
-function normalizeText(value) {
-  return String(value ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim();
-}
-
-function operatorAverage(
-  operator,
-  machines = state.machines
-) {
+function operatorAverage(operator, machines = state.machines) {
   if (!operator || !machines.length) {
     return 0;
   }
 
   const total = machines.reduce((sum, machine) => {
-    return sum + Number(operator.scores[machine] ?? 0);
+    return sum + Number(operator.scores?.[machine] ?? 0);
   }, 0);
 
   return total / machines.length;
@@ -335,21 +305,37 @@ function scoreClass(percent) {
   return "score-low";
 }
 
-function getCurrentView() {
-  const activeView = document.querySelector(".view.active");
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>'"]/g, character => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      "'": "&#39;",
+      '"': "&quot;"
+    };
 
-  return activeView ? activeView.id : "dashboard";
+    return entities[character];
+  });
 }
 
-function formatDate(dateValue) {
-  if (!dateValue) {
+function normalizeText(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+function formatDate(value) {
+  if (!value) {
     return "Sin registrar";
   }
 
-  const date = new Date(`${dateValue}T00:00:00`);
+  const date = new Date(`${value}T00:00:00`);
 
   if (Number.isNaN(date.getTime())) {
-    return dateValue;
+    return value;
   }
 
   return new Intl.DateTimeFormat("es-MX", {
@@ -359,22 +345,23 @@ function formatDate(dateValue) {
   }).format(date);
 }
 
+function getCurrentView() {
+  return document.querySelector(".view.active")?.id || "dashboard";
+}
+
 /* =========================================================
    NAVEGACIÓN
 ========================================================= */
 
 function setView(viewId) {
-  const targetView = getElement(viewId);
+  const selectedView = getElement(viewId);
 
-  if (!targetView) {
+  if (!selectedView) {
     return;
   }
 
   document.querySelectorAll(".view").forEach(view => {
-    view.classList.toggle(
-      "active",
-      view.id === viewId
-    );
+    view.classList.toggle("active", view.id === viewId);
   });
 
   document.querySelectorAll(".nav-item").forEach(button => {
@@ -401,59 +388,17 @@ function setView(viewId) {
    CÁLCULOS
 ========================================================= */
 
-function getLevelCounts(
-  operators = state.operators
-) {
-  const counts = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0
-  };
+function levelCounts(operators = state.operators) {
+  const counts = [0, 0, 0, 0, 0];
 
   operators.forEach(operator => {
     state.machines.forEach(machine => {
-      const level = Number(
-        operator.scores[machine] ?? 0
-      );
+      const level = Number(operator.scores?.[machine] ?? 0);
 
-      if (
-        Object.prototype.hasOwnProperty.call(
-          counts,
-          level
-        )
-      ) {
+      if (level >= 0 && level <= 4) {
         counts[level] += 1;
       }
     });
-  });
-
-  return counts;
-}
-
-function getOperatorLevelCounts(operator) {
-  const counts = {
-    0: 0,
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0
-  };
-
-  state.machines.forEach(machine => {
-    const level = Number(
-      operator.scores[machine] ?? 0
-    );
-
-    if (
-      Object.prototype.hasOwnProperty.call(
-        counts,
-        level
-      )
-    ) {
-      counts[level] += 1;
-    }
   });
 
   return counts;
@@ -464,69 +409,83 @@ function getOperatorLevelCounts(operator) {
 ========================================================= */
 
 function renderDashboard() {
-  const machineCount = getElement("machineCount");
   const operatorCount = getElement("operatorCount");
-  const certifiedCount = getElement("certifiedCount");
-  const criticalGapCount = getElement(
-    "criticalGapCount"
-  );
   const globalScore = getElement("globalScore");
-
-  if (machineCount) {
-    machineCount.textContent =
-      state.machines.length;
-  }
-
-  const activeOperators = state.operators.filter(
-    operator => operator.status !== "Inactivo"
-  );
+  const criticalGapCount = getElement("criticalGapCount");
 
   if (operatorCount) {
-    operatorCount.textContent =
-      activeOperators.length;
+    operatorCount.textContent = state.operators.length;
   }
 
-  const averages = activeOperators.map(operator => {
-    return operatorAverage(operator);
-  });
-
-  const overall = averages.length
-    ? averages.reduce(
-        (sum, value) => sum + value,
-        0
-      ) / averages.length
+  const overall = state.operators.length
+    ? state.operators.reduce((sum, operator) => {
+        return sum + operatorAverage(operator);
+      }, 0) / state.operators.length
     : 0;
 
   if (globalScore) {
-    globalScore.textContent =
-      `${pctFromLevel(overall)}%`;
+    globalScore.textContent = `${pctFromLevel(overall)}%`;
   }
 
-  const certifiedOperators =
-    activeOperators.filter(operator => {
-      return operatorAverage(operator) >= 3;
-    }).length;
+  const counts = levelCounts();
 
-  if (certifiedCount) {
-    certifiedCount.textContent =
-      certifiedOperators;
+  counts.forEach((count, index) => {
+    const counter = getElement(`level${index}Count`);
+
+    if (counter) {
+      counter.textContent = count;
+    }
+  });
+
+  const total = counts.reduce((sum, count) => sum + count, 0);
+
+  const assignmentTotal = getElement("assignmentTotal");
+
+  if (assignmentTotal) {
+    assignmentTotal.textContent = `${total} asignaciones`;
+  }
+
+  const levelDistribution = getElement("levelDistribution");
+
+  if (levelDistribution) {
+    levelDistribution.innerHTML = counts
+      .map((count, index) => {
+        const percentage = total
+          ? Math.round((count / total) * 100)
+          : 0;
+
+        return `
+          <div class="level-distribution-row">
+
+            <div class="level-distribution-label">
+              <i class="level-dot level-${index}"></i>
+              <span>Nivel ${index}</span>
+            </div>
+
+            <div class="level-bar-track">
+              <div
+                class="level-bar-fill level-${index}"
+                style="width: ${percentage}%"
+              ></div>
+            </div>
+
+            <div class="level-distribution-value">
+              ${count}
+            </div>
+
+          </div>
+        `;
+      })
+      .join("");
   }
 
   const gaps = [];
 
   state.machines.forEach(machine => {
-    const total = activeOperators.reduce(
-      (sum, operator) => {
-        return (
-          sum +
-          Number(operator.scores[machine] ?? 0)
-        );
-      },
-      0
-    );
-
-    const average = activeOperators.length
-      ? total / activeOperators.length
+    const average = state.operators.length
+      ? state.operators.reduce((sum, operator) => {
+          return sum + Number(operator.scores?.[machine] ?? 0);
+        }, 0) / state.operators.length
       : 0;
 
     if (average < 2) {
@@ -541,81 +500,15 @@ function renderDashboard() {
     criticalGapCount.textContent = gaps.length;
   }
 
-  renderLevelCounters(activeOperators);
-  renderLevelDistribution(activeOperators);
-  renderFamilyCoverage(activeOperators);
+  renderFamilyCoverage();
   renderPriorityList(gaps);
-  renderOperatorSummary(activeOperators);
+  renderOperatorSummary();
 }
 
-function renderLevelCounters(operators) {
-  const counts = getLevelCounts(operators);
-
-  for (let level = 0; level <= 4; level += 1) {
-    const element = getElement(
-      `level${level}Count`
-    );
-
-    if (element) {
-      element.textContent = counts[level];
-    }
-  }
-}
-
-function renderLevelDistribution(operators) {
-  const container = getElement(
-    "levelDistribution"
-  );
+function renderFamilyCoverage() {
+  const container = getElement("familyCoverage");
 
   if (!container) {
-    return;
-  }
-
-  const counts = getLevelCounts(operators);
-
-  const total = Object.values(counts).reduce(
-    (sum, count) => sum + count,
-    0
-  );
-
-  container.innerHTML = Object.keys(counts)
-    .map(levelKey => {
-      const level = Number(levelKey);
-      const count = counts[level];
-
-      const percentage = total
-        ? Math.round((count / total) * 100)
-        : 0;
-
-      return `
-        <div class="level-distribution-row">
-
-          <div class="level-distribution-label">
-            <i class="level-dot level-${level}"></i>
-            <span>Nivel ${level}</span>
-          </div>
-
-          <div class="level-bar-track">
-            <div
-              class="level-bar-fill level-${level}"
-              style="width: ${percentage}%"
-            ></div>
-          </div>
-
-          <div class="level-distribution-value">
-            ${count}
-          </div>
-
-        </div>
-      `;
-    })
-    .join("");
-}
-
-function renderFamilyCoverage(operators) {
-  const coverage = getElement("familyCoverage");
-
-  if (!coverage) {
     return;
   }
 
@@ -623,32 +516,19 @@ function renderFamilyCoverage(operators) {
     ...new Set(state.machines.map(familyOf))
   ];
 
-  coverage.innerHTML = families
+  container.innerHTML = families
     .map(family => {
-      const familyMachines =
-        state.machines.filter(machine => {
-          return familyOf(machine) === family;
-        });
+      const machines = state.machines.filter(machine => {
+        return familyOf(machine) === family;
+      });
 
-      const total = operators.reduce(
-        (sum, operator) => {
-          return (
-            sum +
-            operatorAverage(
-              operator,
-              familyMachines
-            )
-          );
-        },
-        0
-      );
-
-      const average = operators.length
-        ? total / operators.length
+      const average = state.operators.length
+        ? state.operators.reduce((sum, operator) => {
+            return sum + operatorAverage(operator, machines);
+          }, 0) / state.operators.length
         : 0;
 
-      const percentage =
-        pctFromLevel(average);
+      const percentage = pctFromLevel(average);
 
       return `
         <div class="coverage-row">
@@ -671,23 +551,18 @@ function renderFamilyCoverage(operators) {
 }
 
 function renderPriorityList(gaps) {
-  const priorityList = getElement(
-    "priorityList"
-  );
+  const container = getElement("priorityList");
 
-  if (!priorityList) {
+  if (!container) {
     return;
   }
 
   const orderedGaps = [...gaps]
-    .sort(
-      (first, second) =>
-        first.avg - second.avg
-    )
+    .sort((first, second) => first.avg - second.avg)
     .slice(0, 5);
 
   if (!orderedGaps.length) {
-    priorityList.innerHTML = `
+    container.innerHTML = `
       <div class="empty-state">
         No se detectaron brechas críticas.
       </div>
@@ -696,7 +571,7 @@ function renderPriorityList(gaps) {
     return;
   }
 
-  priorityList.innerHTML = orderedGaps
+  container.innerHTML = orderedGaps
     .map(item => {
       return `
         <div class="priority-item">
@@ -705,8 +580,7 @@ function renderPriorityList(gaps) {
             <strong>${item.machine}</strong>
 
             <small>
-              Nivel promedio
-              ${item.avg.toFixed(1)} de 4
+              Nivel promedio ${item.avg.toFixed(1)} de 4
             </small>
           </div>
 
@@ -720,81 +594,60 @@ function renderPriorityList(gaps) {
     .join("");
 }
 
-function renderOperatorSummary(operators) {
-  const container = getElement(
-    "operatorSummary"
-  );
+function renderOperatorSummary() {
+  const container = getElement("operatorSummary");
 
   if (!container) {
     return;
   }
 
-  container.innerHTML = operators
+  container.innerHTML = state.operators
     .map(operator => {
-      const percent = pctFromLevel(
+      const percentage = pctFromLevel(
         operatorAverage(operator)
       );
 
       return `
-        <div
+        <button
           class="summary-row clickable"
-          data-operator-id="${operator.id}"
-          role="button"
-          tabindex="0"
+          data-summary-operator-id="${escapeHtml(operator.id)}"
+          type="button"
         >
 
-          <div class="operator-meta">
+          <span class="operator-meta">
 
-            <div class="avatar">
+            <span class="avatar">
               ${initials(operator.name)}
-            </div>
+            </span>
 
-            <div>
-              <strong>${operator.name}</strong>
+            <span>
+              <strong>${escapeHtml(operator.name)}</strong>
 
               <small>
-                ${operator.role} ·
-                ${operator.shift}
+                ${escapeHtml(operator.role)} ·
+                ${escapeHtml(operator.shift)}
               </small>
-            </div>
+            </span>
 
-          </div>
-
-          <span
-            class="score-pill ${scoreClass(percent)}"
-          >
-            ${percent}%
           </span>
 
-        </div>
+          <span class="score-pill ${scoreClass(percentage)}">
+            ${percentage}%
+          </span>
+
+        </button>
       `;
     })
     .join("");
 
   container
-    .querySelectorAll("[data-operator-id]")
-    .forEach(element => {
-      element.addEventListener("click", () => {
+    .querySelectorAll("[data-summary-operator-id]")
+    .forEach(button => {
+      button.addEventListener("click", () => {
         openOperatorProfile(
-          element.dataset.operatorId
+          button.dataset.summaryOperatorId
         );
       });
-
-      element.addEventListener(
-        "keydown",
-        event => {
-          if (
-            event.key === "Enter" ||
-            event.key === " "
-          ) {
-            event.preventDefault();
-
-            openOperatorProfile(
-              element.dataset.operatorId
-            );
-          }
-        }
-      );
     });
 }
 
@@ -803,32 +656,21 @@ function renderOperatorSummary(operators) {
 ========================================================= */
 
 function renderMatrix() {
-  const familyFilter = getElement(
-    "matrixFamilyFilter"
-  );
-
+  const familyFilter = getElement("matrixFamilyFilter");
   const matrixHead = getElement("matrixHead");
   const matrixBody = getElement("matrixBody");
 
-  if (
-    !familyFilter ||
-    !matrixHead ||
-    !matrixBody
-  ) {
+  if (!familyFilter || !matrixHead || !matrixBody) {
     return;
   }
 
-  const selectedFamily =
-    familyFilter.value;
+  const selectedFamily = familyFilter.value;
 
   const machines =
     selectedFamily === "all"
       ? state.machines
       : state.machines.filter(machine => {
-          return (
-            familyOf(machine) ===
-            selectedFamily
-          );
+          return familyOf(machine) === selectedFamily;
         });
 
   matrixHead.innerHTML = `
@@ -836,9 +678,7 @@ function renderMatrix() {
       <th>Operador</th>
 
       ${machines
-        .map(machine => {
-          return `<th>${machine}</th>`;
-        })
+        .map(machine => `<th>${escapeHtml(machine)}</th>`)
         .join("")}
 
       <th>Promedio</th>
@@ -847,43 +687,37 @@ function renderMatrix() {
 
   matrixBody.innerHTML = state.operators
     .map(operator => {
-      const average = operatorAverage(
-        operator,
-        machines
-      );
-
       return `
         <tr>
 
           <td>
-
             <button
-              class="matrix-operator-link text-btn"
+              class="operator-link"
+              data-matrix-operator-id="${escapeHtml(operator.id)}"
               type="button"
-              data-operator-id="${operator.id}"
             >
-              ${operator.name}
+              <strong>${escapeHtml(operator.name)}</strong>
+
+              <br>
+
+              <small>
+                ${escapeHtml(operator.id)} ·
+                ${escapeHtml(operator.shift)}
+              </small>
             </button>
-
-            <br>
-
-            <small>
-              ${operator.id} ·
-              ${operator.shift}
-            </small>
-
           </td>
 
           ${machines
             .map(machine => {
-              const level =
-                operator.scores[machine] ?? 0;
+              const level = Number(
+                operator.scores?.[machine] ?? 0
+              );
 
               return `
                 <td>
                   <span
                     class="skill-level level-${level}"
-                    title="${levelNames[level]}"
+                    title="${escapeHtml(levelNames[level])}"
                   >
                     ${level}
                   </span>
@@ -894,7 +728,7 @@ function renderMatrix() {
 
           <td>
             <strong>
-              ${average.toFixed(1)}
+              ${operatorAverage(operator, machines).toFixed(1)}
             </strong>
           </td>
 
@@ -904,11 +738,11 @@ function renderMatrix() {
     .join("");
 
   matrixBody
-    .querySelectorAll("[data-operator-id]")
+    .querySelectorAll("[data-matrix-operator-id]")
     .forEach(button => {
       button.addEventListener("click", () => {
         openOperatorProfile(
-          button.dataset.operatorId
+          button.dataset.matrixOperatorId
         );
       });
     });
@@ -918,19 +752,33 @@ function renderMatrix() {
    OPERADORES
 ========================================================= */
 
-function renderOperators(
-  operators = state.operators
-) {
-  const operatorCards = getElement(
-    "operatorCards"
-  );
+function renderOperators(filter = "") {
+  const container = getElement("operatorCards");
 
-  if (!operatorCards) {
+  if (!container) {
     return;
   }
 
+  const query = normalizeText(filter);
+
+  const operators = state.operators.filter(operator => {
+    const searchableText = normalizeText(
+      [
+        operator.name,
+        operator.id,
+        operator.role,
+        operator.shift,
+        operator.area,
+        operator.supervisor,
+        operator.status
+      ].join(" ")
+    );
+
+    return searchableText.includes(query);
+  });
+
   if (!operators.length) {
-    operatorCards.innerHTML = `
+    container.innerHTML = `
       <div class="empty-state">
         No se encontraron operadores.
       </div>
@@ -939,27 +787,21 @@ function renderOperators(
     return;
   }
 
-  operatorCards.innerHTML = operators
+  container.innerHTML = operators
     .map(operator => {
-      const average =
-        operatorAverage(operator);
+      const average = operatorAverage(operator);
+      const percentage = pctFromLevel(average);
 
-      const percentage =
-        pctFromLevel(average);
-
-      const certifiedMachines =
-        state.machines.filter(machine => {
-          return (
-            operator.scores[machine] >= 3
-          );
-        }).length;
+      const certified = state.machines.filter(machine => {
+        return Number(operator.scores?.[machine] ?? 0) >= 3;
+      }).length;
 
       return `
         <article
-          class="person-card"
-          data-operator-id="${operator.id}"
-          role="button"
+          class="person-card clickable-card"
+          data-card-operator-id="${escapeHtml(operator.id)}"
           tabindex="0"
+          role="button"
         >
 
           <div class="person-header">
@@ -969,58 +811,44 @@ function renderOperators(
             </div>
 
             <div>
-              <h4>${operator.name}</h4>
+              <h4>${escapeHtml(operator.name)}</h4>
 
               <div class="card-subtitle">
-                ${operator.id} ·
-                ${operator.role}
+                ${escapeHtml(operator.id)} ·
+                ${escapeHtml(operator.role)}
               </div>
             </div>
 
           </div>
 
           <div class="card-subtitle">
-            ${operator.area} ·
-            ${operator.shift}
+            ${escapeHtml(operator.area)}
+            · ${escapeHtml(operator.shift)}
           </div>
 
           <div class="card-subtitle">
             Supervisor:
-            ${operator.supervisor}
+            ${escapeHtml(operator.supervisor)}
           </div>
 
           <div class="card-subtitle">
             Ingreso:
-            ${formatDate(operator.hireDate)}
-            · ${operator.status}
+            ${formatDate(operator.entryDate)}
+            · ${escapeHtml(operator.status)}
           </div>
 
           <div class="card-metrics">
 
             <div class="metric-box">
               <span>Competencia</span>
-
-              <strong>
-                ${percentage}%
-              </strong>
-
-              <small>
-                Nivel promedio
-                ${average.toFixed(1)}
-              </small>
+              <strong>${percentage}%</strong>
+              <small>Nivel promedio ${average.toFixed(1)}</small>
             </div>
 
             <div class="metric-box">
               <span>Certificaciones</span>
-
-              <strong>
-                ${certifiedMachines}
-              </strong>
-
-              <small>
-                de ${state.machines.length}
-                máquinas
-              </small>
+              <strong>${certified}</strong>
+              <small>de ${state.machines.length} máquinas</small>
             </div>
 
           </div>
@@ -1030,30 +858,23 @@ function renderOperators(
     })
     .join("");
 
-  operatorCards
-    .querySelectorAll("[data-operator-id]")
+  container
+    .querySelectorAll("[data-card-operator-id]")
     .forEach(card => {
-      card.addEventListener("click", () => {
+      const openCard = () => {
         openOperatorProfile(
-          card.dataset.operatorId
+          card.dataset.cardOperatorId
         );
-      });
+      };
 
-      card.addEventListener(
-        "keydown",
-        event => {
-          if (
-            event.key === "Enter" ||
-            event.key === " "
-          ) {
-            event.preventDefault();
+      card.addEventListener("click", openCard);
 
-            openOperatorProfile(
-              card.dataset.operatorId
-            );
-          }
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openCard();
         }
-      );
+      });
     });
 }
 
@@ -1061,42 +882,30 @@ function renderOperators(
    MÁQUINAS
 ========================================================= */
 
-function renderMachines(
-  machinesToRender = null
-) {
-  const machineCards = getElement(
-    "machineCards"
-  );
+function renderMachines(filter = "") {
+  const familyFilter = getElement("machineFamilyFilter");
+  const container = getElement("machineCards");
 
-  const familyFilter = getElement(
-    "machineFamilyFilter"
-  );
-
-  if (!machineCards || !familyFilter) {
+  if (!familyFilter || !container) {
     return;
   }
 
-  let machines;
+  const selectedFamily = familyFilter.value;
+  const query = normalizeText(filter);
 
-  if (Array.isArray(machinesToRender)) {
-    machines = machinesToRender;
-  } else {
-    const selectedFamily =
-      familyFilter.value;
+  const machines = state.machines.filter(machine => {
+    const matchesFamily =
+      selectedFamily === "all" ||
+      familyOf(machine) === selectedFamily;
 
-    machines =
-      selectedFamily === "all"
-        ? state.machines
-        : state.machines.filter(machine => {
-            return (
-              familyOf(machine) ===
-              selectedFamily
-            );
-          });
-  }
+    const matchesSearch =
+      normalizeText(machine).includes(query);
+
+    return matchesFamily && matchesSearch;
+  });
 
   if (!machines.length) {
-    machineCards.innerHTML = `
+    container.innerHTML = `
       <div class="empty-state">
         No se encontraron máquinas.
       </div>
@@ -1105,64 +914,35 @@ function renderMachines(
     return;
   }
 
-  machineCards.innerHTML = machines
+  container.innerHTML = machines
     .map(machine => {
-      const competentOperators =
-        state.operators.filter(operator => {
-          return (
-            operator.status !== "Inactivo" &&
-            operator.scores[machine] >= 3
-          );
-        });
-
-      const total = state.operators.reduce(
-        (sum, operator) => {
-          return (
-            sum +
-            Number(
-              operator.scores[machine] ?? 0
-            )
-          );
-        },
-        0
-      );
+      const certifiedOperators = state.operators.filter(operator => {
+        return Number(operator.scores?.[machine] ?? 0) >= 3;
+      });
 
       const average = state.operators.length
-        ? total / state.operators.length
+        ? state.operators.reduce((sum, operator) => {
+            return sum + Number(operator.scores?.[machine] ?? 0);
+          }, 0) / state.operators.length
         : 0;
-
-      const settings =
-        state.machineSettings[machine] || {};
-
-      const minimumCoverage =
-        Number(settings.minimumCoverage ?? 2);
 
       const shiftsCovered = [
         ...new Set(
-          competentOperators.map(
-            operator => operator.shift
-          )
+          certifiedOperators.map(operator => operator.shift)
         )
       ];
 
-      const experts =
-        competentOperators.filter(operator => {
-          return (
-            operator.scores[machine] >= 4
-          );
-        });
+      const trainer = certifiedOperators.find(operator => {
+        return Number(operator.scores?.[machine] ?? 0) >= 4;
+      });
+
+      const minimumCoverage = 2;
 
       let risk = "Bajo";
 
-      if (
-        competentOperators.length <
-        minimumCoverage
-      ) {
+      if (certifiedOperators.length < minimumCoverage) {
         risk = "Alto";
-      } else if (
-        competentOperators.length ===
-        minimumCoverage
-      ) {
+      } else if (certifiedOperators.length === minimumCoverage) {
         risk = "Medio";
       }
 
@@ -1176,7 +956,7 @@ function renderMachines(
             </div>
 
             <div>
-              <h4>${machine}</h4>
+              <h4>${escapeHtml(machine)}</h4>
 
               <div class="card-subtitle">
                 Máquina CNC activa
@@ -1192,57 +972,35 @@ function renderMachines(
           <div class="card-metrics">
 
             <div class="metric-box">
-              <span>
-                Operadores certificados
-              </span>
-
-              <strong>
-                ${competentOperators.length}
-              </strong>
-
-              <small>
-                Cobertura mínima:
-                ${minimumCoverage}
-              </small>
+              <span>Operadores certificados</span>
+              <strong>${certifiedOperators.length}</strong>
+              <small>Cobertura mínima: ${minimumCoverage}</small>
             </div>
 
             <div class="metric-box">
               <span>Nivel promedio</span>
-
-              <strong>
-                ${average.toFixed(1)}
-              </strong>
-
-              <small>
-                Escala de 0 a 4
-              </small>
+              <strong>${average.toFixed(1)}</strong>
+              <small>Escala de 0 a 4</small>
             </div>
 
             <div class="metric-box">
               <span>Turnos cubiertos</span>
-
-              <strong>
-                ${shiftsCovered.length}
-              </strong>
-
+              <strong>${shiftsCovered.length}</strong>
               <small>
-                ${
-                  shiftsCovered.join(", ") ||
-                  "Sin cobertura"
-                }
+                ${shiftsCovered.length
+                  ? escapeHtml(shiftsCovered.join(", "))
+                  : "Sin cobertura"}
               </small>
             </div>
 
             <div class="metric-box">
-              <span>Riesgo de cobertura</span>
-
+              <span>Riesgo de respaldo</span>
               <strong>${risk}</strong>
-
               <small>
                 ${
-                  experts.length
-                    ? `Entrenador: ${experts[0].name}`
-                    : "Sin entrenador asignado"
+                  trainer
+                    ? `Entrenador: ${escapeHtml(trainer.name)}`
+                    : "Sin entrenador disponible"
                 }
               </small>
             </div>
@@ -1260,42 +1018,30 @@ function renderMachines(
 ========================================================= */
 
 function renderTraining() {
-  const trainingTable = getElement(
-    "trainingTable"
-  );
+  const container = getElement("trainingTable");
 
-  if (!trainingTable) {
+  if (!container) {
     return;
   }
 
   const rows = [];
 
   state.operators.forEach(operator => {
-    if (operator.status === "Inactivo") {
-      return;
-    }
-
     state.machines.forEach(machine => {
-      const currentLevel =
-        operator.scores[machine] ?? 0;
+      const current = Number(
+        operator.scores?.[machine] ?? 0
+      );
 
-      if (currentLevel < 2) {
+      if (current < 2) {
         rows.push({
-          operatorId: operator.id,
-          operatorName: operator.name,
+          operator: operator.name,
           machine,
-          current: currentLevel,
+          current,
           target: 2,
-          responsible:
-            operator.supervisor ||
-            "Sin asignar",
-          dueDate: "",
+          responsible: operator.supervisor,
           status: "Pendiente",
           evidence: "Sin evidencia",
-          priority:
-            currentLevel === 0
-              ? "Alta"
-              : "Media"
+          priority: current === 0 ? "Alta" : "Media"
         });
       }
     });
@@ -1306,13 +1052,11 @@ function renderTraining() {
       return first.current - second.current;
     }
 
-    return first.machine.localeCompare(
-      second.machine
-    );
+    return first.machine.localeCompare(second.machine);
   });
 
   if (!rows.length) {
-    trainingTable.innerHTML = `
+    container.innerHTML = `
       <div class="empty-state">
         No existen necesidades de capacitación pendientes.
       </div>
@@ -1321,44 +1065,37 @@ function renderTraining() {
     return;
   }
 
-  trainingTable.innerHTML = rows
+  container.innerHTML = rows
     .slice(0, 24)
     .map(row => {
       return `
         <div class="training-item">
 
           <div>
-
             <strong>
-              ${row.operatorName} ·
-              ${row.machine}
+              ${escapeHtml(row.operator)} ·
+              ${escapeHtml(row.machine)}
             </strong>
 
             <br>
 
             <small>
-              Nivel actual:
-              ${row.current}
-              · Nivel objetivo:
-              ${row.target}
+              Nivel actual: ${row.current}
+              · Nivel objetivo: ${row.target}
             </small>
 
             <br>
 
             <small>
-              Responsable:
-              ${row.responsible}
-              · Estado:
-              ${row.status}
+              Responsable: ${escapeHtml(row.responsible)}
+              · Estado: ${row.status}
             </small>
 
             <br>
 
             <small>
-              Evidencia:
-              ${row.evidence}
+              Evidencia: ${row.evidence}
             </small>
-
           </div>
 
           <span
@@ -1399,49 +1136,35 @@ function openOperatorProfile(operatorId) {
   state.selectedOperatorId = operatorId;
 
   renderOperatorProfile(operator);
-  closeSearchResults();
   setView("operatorProfile");
+  hideSearchResults();
 }
 
 function renderOperatorProfile(operator) {
-  if (!operator) {
-    return;
-  }
-
   const average = operatorAverage(operator);
   const percentage = pctFromLevel(average);
+  const counts = [0, 0, 0, 0, 0];
 
-  const levelCounts =
-    getOperatorLevelCounts(operator);
+  state.machines.forEach(machine => {
+    const level = Number(operator.scores?.[machine] ?? 0);
+    counts[level] += 1;
+  });
 
-  const profileInitials = getElement(
-    "profileInitials"
-  );
-
-  const profileName = getElement(
-    "profileName"
-  );
-
-  const profileEmployeeId = getElement(
-    "profileEmployeeId"
-  );
-
-  const profileRole = getElement(
-    "profileRole"
-  );
-
-  const profileShift = getElement(
-    "profileShift"
-  );
-
-  const profileScore = getElement(
-    "profileScore"
-  );
+  /*
+    Compatibilidad con el HTML más reciente.
+  */
+  const profileInitials = getElement("profileInitials");
+  const profileName = getElement("profileName");
+  const profileEmployeeId = getElement("profileEmployeeId");
+  const profileRole = getElement("profileRole");
+  const profileShift = getElement("profileShift");
+  const profileScore = getElement("profileScore");
+  const profileLevelSummary = getElement("profileLevelSummary");
+  const profileMachineSkills = getElement("profileMachineSkills");
+  const profileTraining = getElement("profileTraining");
 
   if (profileInitials) {
-    profileInitials.textContent = initials(
-      operator.name
-    );
+    profileInitials.textContent = initials(operator.name);
   }
 
   if (profileName) {
@@ -1449,13 +1172,11 @@ function renderOperatorProfile(operator) {
   }
 
   if (profileEmployeeId) {
-    profileEmployeeId.textContent =
-      `ID: ${operator.id}`;
+    profileEmployeeId.textContent = `ID: ${operator.id}`;
   }
 
   if (profileRole) {
-    profileRole.textContent =
-      `Puesto: ${operator.role}`;
+    profileRole.textContent = `Puesto: ${operator.role}`;
   }
 
   if (profileShift) {
@@ -1464,307 +1185,171 @@ function renderOperatorProfile(operator) {
   }
 
   if (profileScore) {
-    profileScore.textContent =
-      `${percentage}%`;
+    profileScore.textContent = `${percentage}%`;
   }
 
-  renderProfileLevelSummary(levelCounts);
-  renderProfileMachineSkills(operator);
-  renderProfileTraining(operator);
-}
+  if (profileLevelSummary) {
+    profileLevelSummary.innerHTML = counts
+      .map((count, level) => {
+        return `
+          <div class="profile-level-item">
 
-function renderProfileLevelSummary(levelCounts) {
-  const container = getElement(
-    "profileLevelSummary"
-  );
+            <i class="level-dot level-${level}"></i>
 
-  if (!container) {
-    return;
-  }
+            <div>
+              <strong>Nivel ${level}</strong>
+              <small>${levelNames[level]}</small>
+            </div>
 
-  container.innerHTML = Object.keys(levelCounts)
-    .map(levelKey => {
-      const level = Number(levelKey);
+            <strong>${count}</strong>
 
-      return `
-        <div class="profile-level-item">
-
-          <i class="level-dot level-${level}"></i>
-
-          <div>
-            <strong>Nivel ${level}</strong>
-
-            <small>
-              ${levelNames[level]}
-            </small>
           </div>
-
-          <strong>
-            ${levelCounts[level]}
-          </strong>
-
-        </div>
-      `;
-    })
-    .join("");
-}
-
-function renderProfileMachineSkills(operator) {
-  const container = getElement(
-    "profileMachineSkills"
-  );
-
-  if (!container) {
-    return;
+        `;
+      })
+      .join("");
   }
 
-  const orderedMachines = [
-    ...state.machines
-  ].sort((firstMachine, secondMachine) => {
-    const firstLevel =
-      operator.scores[firstMachine] ?? 0;
+  if (profileMachineSkills) {
+    profileMachineSkills.innerHTML = state.machines
+      .map(machine => {
+        const level = Number(
+          operator.scores?.[machine] ?? 0
+        );
 
-    const secondLevel =
-      operator.scores[secondMachine] ?? 0;
+        return `
+          <div class="profile-machine-row">
 
-    if (firstLevel !== secondLevel) {
-      return secondLevel - firstLevel;
-    }
+            <div>
+              <strong>${escapeHtml(machine)}</strong>
 
-    return firstMachine.localeCompare(
-      secondMachine
-    );
-  });
+              <small>
+                ${escapeHtml(levelNames[level])}
+              </small>
+            </div>
 
-  container.innerHTML = orderedMachines
-    .map(machine => {
-      const level =
-        operator.scores[machine] ?? 0;
+            <div class="progress-track">
+              <div
+                class="level-bar-fill level-${level}"
+                style="width: ${pctFromLevel(level)}%"
+              ></div>
+            </div>
 
-      const percentage =
-        pctFromLevel(level);
+            <span class="profile-level-badge level-${level}">
+              Nivel ${level}
+            </span>
 
-      const certification =
-        operator.certifications?.[machine];
-
-      return `
-        <div class="profile-machine-row">
-
-          <div>
-            <strong>${machine}</strong>
-
-            ${
-              certification
-                ? `
-                  <small>
-                    Certificado:
-                    ${formatDate(
-                      certification.certificationDate
-                    )}
-                    · Evaluador:
-                    ${
-                      certification.evaluator ||
-                      "Sin registrar"
-                    }
-                    · Vencimiento:
-                    ${formatDate(
-                      certification.expirationDate
-                    )}
-                  </small>
-                `
-                : ""
-            }
           </div>
-
-          <div class="progress-track">
-            <div
-              class="level-bar-fill level-${level}"
-              style="width: ${percentage}%"
-            ></div>
-          </div>
-
-          <span
-            class="profile-level-badge level-${level}"
-          >
-            Nivel ${level}
-          </span>
-
-        </div>
-      `;
-    })
-    .join("");
-}
-
-function renderProfileTraining(operator) {
-  const container = getElement(
-    "profileTraining"
-  );
-
-  if (!container) {
-    return;
+        `;
+      })
+      .join("");
   }
 
-  const trainingNeeds = state.machines
-    .map(machine => {
-      return {
+  if (profileTraining) {
+    const needs = state.machines
+      .map(machine => ({
         machine,
-        level:
-          operator.scores[machine] ?? 0
-      };
-    })
-    .filter(item => item.level < 2)
-    .sort((first, second) => {
-      if (first.level !== second.level) {
-        return first.level - second.level;
-      }
+        level: Number(operator.scores?.[machine] ?? 0)
+      }))
+      .filter(item => item.level < 2);
 
-      return first.machine.localeCompare(
-        second.machine
-      );
-    });
+    profileTraining.innerHTML = needs.length
+      ? needs
+          .map(item => {
+            const priority =
+              item.level === 0 ? "Alta" : "Media";
 
-  if (!trainingNeeds.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        El operador no presenta brechas críticas de capacitación.
-      </div>
-    `;
+            return `
+              <div class="profile-training-item">
 
-    return;
-  }
+                <div>
+                  <strong>${escapeHtml(item.machine)}</strong>
 
-  container.innerHTML = trainingNeeds
-    .map(item => {
-      const priority =
-        item.level === 0
-          ? "Alta"
-          : "Media";
+                  <br>
 
-      return `
-        <div class="profile-training-item">
+                  <small>
+                    Nivel actual: ${item.level}
+                    · Objetivo recomendado: 2
+                  </small>
 
-          <div>
+                  <br>
 
-            <strong>${item.machine}</strong>
+                  <small>
+                    Responsable:
+                    ${escapeHtml(operator.supervisor)}
+                  </small>
+                </div>
 
-            <br>
+                <span
+                  class="training-status ${
+                    priority === "Alta"
+                      ? "status-high"
+                      : "status-medium"
+                  }"
+                >
+                  ${priority}
+                </span>
 
-            <small>
-              Nivel actual:
-              ${item.level}
-              · Objetivo recomendado: 2
-            </small>
-
-            <br>
-
-            <small>
-              Responsable:
-              ${operator.supervisor}
-            </small>
-
+              </div>
+            `;
+          })
+          .join("")
+      : `
+          <div class="empty-state">
+            El operador no presenta brechas críticas.
           </div>
-
-          <span
-            class="training-status ${
-              priority === "Alta"
-                ? "status-high"
-                : "status-medium"
-            }"
-          >
-            ${priority}
-          </span>
-
-        </div>
-      `;
-    })
-    .join("");
+        `;
+  }
 }
 
 /* =========================================================
-   BÚSQUEDA GLOBAL
+   BÚSQUEDA
 ========================================================= */
 
-function searchOperators(query) {
-  const normalizedQuery =
-    normalizeText(query);
-
-  if (!normalizedQuery) {
-    return [];
-  }
-
-  return state.operators.filter(operator => {
-    const machineText = state.machines
-      .filter(machine => {
-        return operator.scores[machine] > 0;
-      })
-      .join(" ");
-
-    const searchableText = normalizeText(
-      [
-        operator.name,
-        operator.id,
-        operator.role,
-        operator.shift,
-        operator.area,
-        operator.supervisor,
-        operator.status,
-        machineText
-      ].join(" ")
-    );
-
-    return searchableText.includes(
-      normalizedQuery
-    );
-  });
-}
-
-function searchMachines(query) {
-  const normalizedQuery =
-    normalizeText(query);
-
-  if (!normalizedQuery) {
-    return [];
-  }
-
-  return state.machines.filter(machine => {
-    return normalizeText(machine).includes(
-      normalizedQuery
-    );
-  });
-}
-
 function renderSearchResults(query) {
-  const searchResults = getElement(
-    "searchResults"
-  );
+  const container = getElement("searchResults");
 
-  if (!searchResults) {
+  if (!container) {
     return;
   }
 
-  const normalizedQuery =
-    normalizeText(query);
+  const normalizedQuery = normalizeText(query);
 
   if (!normalizedQuery) {
-    closeSearchResults();
+    hideSearchResults();
     return;
   }
 
-  const matchingOperators =
-    searchOperators(query);
+  const matchingOperators = state.operators
+    .filter(operator => {
+      const searchableText = normalizeText(
+        [
+          operator.name,
+          operator.id,
+          operator.role,
+          operator.shift,
+          operator.area,
+          operator.supervisor
+        ].join(" ")
+      );
 
-  const matchingMachines =
-    searchMachines(query);
+      return searchableText.includes(normalizedQuery);
+    })
+    .slice(0, 6);
+
+  const matchingMachines = state.machines
+    .filter(machine => {
+      return normalizeText(machine).includes(normalizedQuery);
+    })
+    .slice(0, 6);
 
   const operatorResults = matchingOperators
-    .slice(0, 6)
     .map(operator => {
       return `
         <button
-          type="button"
           class="search-result-item"
           data-result-type="operator"
-          data-result-id="${operator.id}"
+          data-result-id="${escapeHtml(operator.id)}"
+          type="button"
         >
 
           <span class="search-result-avatar">
@@ -1772,17 +1357,13 @@ function renderSearchResults(query) {
           </span>
 
           <span class="search-result-info">
-
-            <strong>
-              ${operator.name}
-            </strong>
+            <strong>${escapeHtml(operator.name)}</strong>
 
             <small>
-              ${operator.id} ·
-              ${operator.role} ·
-              ${operator.shift}
+              ${escapeHtml(operator.id)} ·
+              ${escapeHtml(operator.role)} ·
+              ${escapeHtml(operator.shift)}
             </small>
-
           </span>
 
         </button>
@@ -1791,14 +1372,13 @@ function renderSearchResults(query) {
     .join("");
 
   const machineResults = matchingMachines
-    .slice(0, 4)
     .map(machine => {
       return `
         <button
-          type="button"
           class="search-result-item"
           data-result-type="machine"
-          data-result-id="${machine}"
+          data-result-id="${escapeHtml(machine)}"
+          type="button"
         >
 
           <span class="search-result-avatar">
@@ -1806,13 +1386,8 @@ function renderSearchResults(query) {
           </span>
 
           <span class="search-result-info">
-
-            <strong>${machine}</strong>
-
-            <small>
-              Máquina CNC activa
-            </small>
-
+            <strong>${escapeHtml(machine)}</strong>
+            <small>Máquina CNC activa</small>
           </span>
 
         </button>
@@ -1820,80 +1395,50 @@ function renderSearchResults(query) {
     })
     .join("");
 
-  if (!operatorResults && !machineResults) {
-    searchResults.innerHTML = `
-      <div class="search-no-results">
-        No se encontraron resultados.
-      </div>
-    `;
+  container.innerHTML =
+    operatorResults ||
+    machineResults
+      ? operatorResults + machineResults
+      : `
+          <div class="search-no-results">
+            No se encontraron coincidencias.
+          </div>
+        `;
 
-    searchResults.classList.add("active");
-    return;
-  }
+  container.hidden = false;
+  container.classList.add("active");
 
-  searchResults.innerHTML =
-    operatorResults + machineResults;
-
-  searchResults.classList.add("active");
-
-  searchResults
-    .querySelectorAll("[data-result-type]")
-    .forEach(result => {
-      result.addEventListener("click", () => {
-        const resultType =
-          result.dataset.resultType;
-
-        const resultId =
-          result.dataset.resultId;
-
-        if (resultType === "operator") {
-          openOperatorProfile(resultId);
+  container
+    .querySelectorAll(".search-result-item")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        if (button.dataset.resultType === "operator") {
+          openOperatorProfile(button.dataset.resultId);
+          return;
         }
 
-        if (resultType === "machine") {
-          showMachineSearchResult(resultId);
+        const familyFilter = getElement("machineFamilyFilter");
+
+        if (familyFilter) {
+          familyFilter.value = "all";
         }
+
+        setView("machines");
+        renderMachines(button.dataset.resultId);
+        hideSearchResults();
       });
     });
 }
 
-function showMachineSearchResult(machine) {
-  const familyFilter = getElement(
-    "machineFamilyFilter"
-  );
+function hideSearchResults() {
+  const container = getElement("searchResults");
 
-  if (familyFilter) {
-    familyFilter.value = "all";
-  }
-
-  renderMachines([machine]);
-  closeSearchResults();
-  setView("machines");
-}
-
-function closeSearchResults() {
-  const searchResults = getElement(
-    "searchResults"
-  );
-
-  if (!searchResults) {
+  if (!container) {
     return;
   }
 
-  searchResults.classList.remove("active");
-  searchResults.innerHTML = "";
-}
-
-function clearGlobalSearch() {
-  const globalSearch = getElement(
-    "globalSearch"
-  );
-
-  if (globalSearch) {
-    globalSearch.value = "";
-  }
-
-  closeSearchResults();
+  container.hidden = true;
+  container.classList.remove("active");
 }
 
 /* =========================================================
@@ -1908,249 +1453,179 @@ function renderAll() {
   renderTraining();
 
   if (state.selectedOperatorId) {
-    const selectedOperator =
-      state.operators.find(operator => {
-        return (
-          operator.id ===
-          state.selectedOperatorId
-        );
-      });
+    const selectedOperator = state.operators.find(operator => {
+      return operator.id === state.selectedOperatorId;
+    });
 
     if (selectedOperator) {
-      renderOperatorProfile(
-        selectedOperator
-      );
+      renderOperatorProfile(selectedOperator);
     }
   }
 }
 
 /* =========================================================
-   EVENTOS DE NAVEGACIÓN
+   EVENTOS
 ========================================================= */
 
-document
-  .querySelectorAll(".nav-item")
-  .forEach(button => {
-    button.addEventListener("click", () => {
-      clearGlobalSearch();
-      setView(button.dataset.view);
-    });
+document.querySelectorAll(".nav-item").forEach(button => {
+  button.addEventListener("click", () => {
+    setView(button.dataset.view);
   });
+});
 
-document
-  .querySelectorAll("[data-go]")
-  .forEach(button => {
-    button.addEventListener("click", () => {
-      clearGlobalSearch();
-      setView(button.dataset.go);
-    });
+document.querySelectorAll("[data-go]").forEach(button => {
+  button.addEventListener("click", () => {
+    setView(button.dataset.go);
   });
+});
 
-/* =========================================================
-   FILTROS
-========================================================= */
-
-const matrixFamilyFilter = getElement(
-  "matrixFamilyFilter"
-);
+const matrixFamilyFilter = getElement("matrixFamilyFilter");
 
 if (matrixFamilyFilter) {
-  matrixFamilyFilter.addEventListener(
-    "change",
-    renderMatrix
-  );
+  matrixFamilyFilter.addEventListener("change", renderMatrix);
 }
 
-const machineFamilyFilter = getElement(
-  "machineFamilyFilter"
-);
+const machineFamilyFilter = getElement("machineFamilyFilter");
 
 if (machineFamilyFilter) {
-  machineFamilyFilter.addEventListener(
-    "change",
-    () => renderMachines()
-  );
+  machineFamilyFilter.addEventListener("change", () => {
+    renderMachines();
+  });
 }
 
 /* =========================================================
-   ALTA DE OPERADORES
+   ALTA DE OPERADOR
 ========================================================= */
 
-const dialog = getElement("operatorDialog");
+const operatorDialog = getElement("operatorDialog");
+const addOperatorButton = getElement("addOperatorBtn2");
+const operatorForm = getElement("operatorForm");
 
-const addOperatorButton = getElement(
-  "addOperatorBtn2"
-);
-
-if (addOperatorButton && dialog) {
-  addOperatorButton.addEventListener(
-    "click",
-    () => {
-      const operatorForm =
-        getElement("operatorForm");
-
-      if (operatorForm) {
-        operatorForm.reset();
-      }
-
-      dialog.showModal();
-    }
-  );
-}
-
-const operatorForm = getElement(
-  "operatorForm"
-);
-
-if (operatorForm && dialog) {
-  operatorForm.addEventListener(
-    "submit",
-    event => {
-      const submitter = event.submitter;
-
-      if (
-        !submitter ||
-        submitter.value === "cancel"
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-
-      const operatorId =
-        getElement("operatorId");
-
-      const operatorName =
-        getElement("operatorName");
-
-      const operatorRole =
-        getElement("operatorRole");
-
-      const operatorShift =
-        getElement("operatorShift");
-
-      if (
-        !operatorId ||
-        !operatorName ||
-        !operatorRole ||
-        !operatorShift
-      ) {
-        return;
-      }
-
-      const newOperator = {
-        id: operatorId.value.trim(),
-        name: operatorName.value.trim(),
-        role: operatorRole.value,
-        shift: operatorShift.value,
-        area: "Maquinado CNC",
-        supervisor: "Sin asignar",
-        hireDate: new Date()
-          .toISOString()
-          .slice(0, 10),
-        status: "Activo",
-        scores: {},
-        certifications: {},
-        trainingHistory: [],
-        developmentPlan: []
-      };
-
-      if (
-        !newOperator.id ||
-        !newOperator.name
-      ) {
-        return;
-      }
-
-      const duplicateId =
-        state.operators.some(operator => {
-          return (
-            normalizeText(operator.id) ===
-            normalizeText(newOperator.id)
-          );
-        });
-
-      if (duplicateId) {
-        window.alert(
-          "Ya existe un operador con ese número de empleado."
-        );
-
-        return;
-      }
-
-      state.machines.forEach(machine => {
-        newOperator.scores[machine] = 0;
-      });
-
-      state.operators.push(newOperator);
-
-      saveState();
-
+if (addOperatorButton && operatorDialog) {
+  addOperatorButton.addEventListener("click", () => {
+    if (operatorForm) {
       operatorForm.reset();
-      dialog.close();
-
-      renderAll();
-      setView("operators");
     }
-  );
+
+    operatorDialog.showModal();
+  });
+}
+
+if (operatorForm && operatorDialog) {
+  operatorForm.addEventListener("submit", event => {
+    const submitter = event.submitter;
+
+    if (!submitter || submitter.value === "cancel") {
+      return;
+    }
+
+    event.preventDefault();
+
+    const operatorId = getElement("operatorId")?.value.trim();
+    const operatorName = getElement("operatorName")?.value.trim();
+    const operatorRole = getElement("operatorRole")?.value;
+    const operatorShift = getElement("operatorShift")?.value;
+
+    if (!operatorId || !operatorName) {
+      window.alert(
+        "Ingresa el nombre y el número de empleado."
+      );
+
+      return;
+    }
+
+    const duplicate = state.operators.some(operator => {
+      return (
+        normalizeText(operator.id) ===
+        normalizeText(operatorId)
+      );
+    });
+
+    if (duplicate) {
+      window.alert(
+        "Ya existe un operador con ese número de empleado."
+      );
+
+      return;
+    }
+
+    const scores = {};
+
+    state.machines.forEach(machine => {
+      scores[machine] = 0;
+    });
+
+    const newOperator = {
+      id: operatorId,
+      name: operatorName,
+      role: operatorRole || "Operador CNC",
+      shift: operatorShift || "Turno A",
+      area: "Maquinado CNC",
+      supervisor: "Por asignar",
+      entryDate: new Date().toISOString().slice(0, 10),
+      status: "Activo",
+      scores,
+      certifications: {},
+      trainingHistory: [],
+      developmentPlan: []
+    };
+
+    state.operators.push(newOperator);
+
+    /*
+      Esta línea es la que conserva al operador
+      después de recargar la página.
+    */
+    saveState();
+
+    operatorForm.reset();
+    operatorDialog.close();
+
+    renderAll();
+    setView("operators");
+  });
 }
 
 /* =========================================================
-   BÚSQUEDA
+   BÚSQUEDA GLOBAL
 ========================================================= */
 
-const globalSearch = getElement(
-  "globalSearch"
-);
+const globalSearch = getElement("globalSearch");
 
 if (globalSearch) {
-  globalSearch.addEventListener(
-    "input",
-    event => {
-      renderSearchResults(
-        event.target.value
-      );
+  globalSearch.addEventListener("input", event => {
+    renderSearchResults(event.target.value);
+  });
+
+  globalSearch.addEventListener("focus", event => {
+    if (event.target.value.trim()) {
+      renderSearchResults(event.target.value);
     }
-  );
+  });
 
-  globalSearch.addEventListener(
-    "keydown",
-    event => {
-      if (event.key === "Escape") {
-        clearGlobalSearch();
-      }
-
-      if (event.key === "Enter") {
-        const firstResult =
-          document.querySelector(
-            ".search-result-item"
-          );
-
-        if (firstResult) {
-          event.preventDefault();
-          firstResult.click();
-        }
-      }
+  globalSearch.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      globalSearch.value = "";
+      hideSearchResults();
     }
-  );
+  });
 }
 
 document.addEventListener("click", event => {
-  const searchContainer =
-    document.querySelector(
-      ".search-container"
-    );
+  const searchContainer = document.querySelector(
+    ".search-container"
+  );
 
   if (
     searchContainer &&
     !searchContainer.contains(event.target)
   ) {
-    closeSearchResults();
+    hideSearchResults();
   }
 });
 
 /* =========================================================
-   PERFIL
+   REGRESAR DESDE PERFIL
 ========================================================= */
 
 const backToOperatorsButton = getElement(
@@ -2158,33 +1633,29 @@ const backToOperatorsButton = getElement(
 );
 
 if (backToOperatorsButton) {
-  backToOperatorsButton.addEventListener(
-    "click",
-    () => {
-      const returnView =
-        state.previousView ===
-        "operatorProfile"
-          ? "operators"
-          : state.previousView;
+  backToOperatorsButton.addEventListener("click", () => {
+    const returnView =
+      state.previousView &&
+      state.previousView !== "operatorProfile"
+        ? state.previousView
+        : "operators";
 
-      setView(returnView || "operators");
-    }
-  );
+    setView(returnView);
+  });
 }
 
-const editOperatorButton = getElement(
-  "editOperatorBtn"
-);
+/* =========================================================
+   EDICIÓN DEL OPERADOR
+========================================================= */
+
+const editOperatorButton = getElement("editOperatorBtn");
 
 if (editOperatorButton) {
-  editOperatorButton.addEventListener(
-    "click",
-    () => {
-      window.alert(
-        "La edición completa del operador se agregará en la siguiente actualización."
-      );
-    }
-  );
+  editOperatorButton.addEventListener("click", () => {
+    window.alert(
+      "La edición de operadores se habilitará en la siguiente etapa."
+    );
+  });
 }
 
 /* =========================================================
