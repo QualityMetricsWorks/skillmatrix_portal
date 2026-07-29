@@ -1,69 +1,28 @@
-const state = {
-  machines: [
-    "CMV-003",
-    "CMV-004",
-    "CMV-005",
-    "CMV-006",
-    "TCN-001",
-    "TCN-002",
-    "TCN-005",
-    "CMH-004",
-    "RV-001",
-    "RV-002",
-    "TCN-009",
-    "TCN-010",
-    "TCN-011",
-    "TCN-012"
-  ],
+"use strict";
 
-  operators: [
-    {
-      id: "OP-001",
-      name: "Juan Pérez",
-      role: "Operador CNC",
-      shift: "Turno A",
-      scores: {}
-    },
-    {
-      id: "OP-002",
-      name: "Luis Martínez",
-      role: "Setup Technician",
-      shift: "Turno A",
-      scores: {}
-    },
-    {
-      id: "OP-003",
-      name: "Marco Rodríguez",
-      role: "Operador CNC",
-      shift: "Turno B",
-      scores: {}
-    },
-    {
-      id: "OP-004",
-      name: "Alejandro Torres",
-      role: "Entrenador",
-      shift: "Turno B",
-      scores: {}
-    },
-    {
-      id: "OP-005",
-      name: "José Hernández",
-      role: "Operador CNC",
-      shift: "Turno C",
-      scores: {}
-    },
-    {
-      id: "OP-006",
-      name: "Miguel Sánchez",
-      role: "Operador CNC",
-      shift: "Turno C",
-      scores: {}
-    }
-  ],
+/* =========================================================
+   CONFIGURACIÓN Y PERSISTENCIA
+========================================================= */
 
-  selectedOperatorId: null,
-  previousView: "dashboard"
-};
+const STORAGE_KEY = "cncSkillsPortalData";
+const STORAGE_VERSION = 1;
+
+const defaultMachines = [
+  "CMV-003",
+  "CMV-004",
+  "CMV-005",
+  "CMV-006",
+  "TCN-001",
+  "TCN-002",
+  "TCN-005",
+  "CMH-004",
+  "RV-001",
+  "RV-002",
+  "TCN-009",
+  "TCN-010",
+  "TCN-011",
+  "TCN-012"
+];
 
 const baseScoreRows = [
   [3, 3, 2, 1, 3, 2, 1, 2, 0, 0, 1, 1, 0, 0],
@@ -74,12 +33,229 @@ const baseScoreRows = [
   [3, 2, 2, 1, 3, 2, 1, 2, 1, 1, 2, 2, 1, 1]
 ];
 
-state.operators.forEach((operator, operatorIndex) => {
-  state.machines.forEach((machine, machineIndex) => {
-    operator.scores[machine] =
-      baseScoreRows[operatorIndex]?.[machineIndex] ?? 0;
+const defaultOperatorData = [
+  {
+    id: "OP-001",
+    name: "Juan Pérez",
+    role: "Operador CNC",
+    shift: "Turno A",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor Turno A",
+    hireDate: "2024-01-15",
+    status: "Activo"
+  },
+  {
+    id: "OP-002",
+    name: "Luis Martínez",
+    role: "Setup Technician",
+    shift: "Turno A",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor Turno A",
+    hireDate: "2023-08-21",
+    status: "Activo"
+  },
+  {
+    id: "OP-003",
+    name: "Marco Rodríguez",
+    role: "Operador CNC",
+    shift: "Turno B",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor Turno B",
+    hireDate: "2024-03-11",
+    status: "Activo"
+  },
+  {
+    id: "OP-004",
+    name: "Alejandro Torres",
+    role: "Entrenador",
+    shift: "Turno B",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor Turno B",
+    hireDate: "2022-06-06",
+    status: "Activo"
+  },
+  {
+    id: "OP-005",
+    name: "José Hernández",
+    role: "Operador CNC",
+    shift: "Turno C",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor Turno C",
+    hireDate: "2024-05-20",
+    status: "Activo"
+  },
+  {
+    id: "OP-006",
+    name: "Miguel Sánchez",
+    role: "Operador CNC",
+    shift: "Turno C",
+    area: "Maquinado CNC",
+    supervisor: "Supervisor Turno C",
+    hireDate: "2023-11-13",
+    status: "Activo"
+  }
+];
+
+function createDefaultOperators() {
+  return defaultOperatorData.map((operatorData, operatorIndex) => {
+    const scores = {};
+
+    defaultMachines.forEach((machine, machineIndex) => {
+      scores[machine] =
+        baseScoreRows[operatorIndex]?.[machineIndex] ?? 0;
+    });
+
+    return {
+      ...operatorData,
+      scores,
+      certifications: {},
+      trainingHistory: [],
+      developmentPlan: []
+    };
   });
-});
+}
+
+function createDefaultState() {
+  return {
+    version: STORAGE_VERSION,
+    machines: [...defaultMachines],
+    operators: createDefaultOperators(),
+    machineSettings: {},
+    trainingPlans: [],
+    selectedOperatorId: null,
+    previousView: "dashboard"
+  };
+}
+
+let state = createDefaultState();
+
+function saveState() {
+  try {
+    const persistentData = {
+      version: STORAGE_VERSION,
+      machines: state.machines,
+      operators: state.operators,
+      machineSettings: state.machineSettings,
+      trainingPlans: state.trainingPlans
+    };
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(persistentData)
+    );
+  } catch (error) {
+    console.error(
+      "No fue posible guardar la información del portal:",
+      error
+    );
+  }
+}
+
+function normalizeStoredOperator(operator) {
+  const normalizedOperator = {
+    id: String(operator.id ?? "").trim(),
+    name: String(operator.name ?? "").trim(),
+    role: operator.role || "Operador CNC",
+    shift: operator.shift || "Turno A",
+    area: operator.area || "Maquinado CNC",
+    supervisor: operator.supervisor || "Sin asignar",
+    hireDate: operator.hireDate || "",
+    status: operator.status || "Activo",
+    scores: {},
+    certifications:
+      operator.certifications &&
+      typeof operator.certifications === "object"
+        ? operator.certifications
+        : {},
+    trainingHistory: Array.isArray(operator.trainingHistory)
+      ? operator.trainingHistory
+      : [],
+    developmentPlan: Array.isArray(operator.developmentPlan)
+      ? operator.developmentPlan
+      : []
+  };
+
+  state.machines.forEach(machine => {
+    const storedLevel = Number(operator.scores?.[machine] ?? 0);
+
+    normalizedOperator.scores[machine] =
+      Number.isInteger(storedLevel) &&
+      storedLevel >= 0 &&
+      storedLevel <= 4
+        ? storedLevel
+        : 0;
+  });
+
+  return normalizedOperator;
+}
+
+function loadState() {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+
+  if (!savedData) {
+    saveState();
+    return;
+  }
+
+  try {
+    const parsedData = JSON.parse(savedData);
+
+    if (
+      !parsedData ||
+      !Array.isArray(parsedData.machines) ||
+      !Array.isArray(parsedData.operators)
+    ) {
+      throw new Error("La estructura guardada no es válida.");
+    }
+
+    state.machines = [
+      ...new Set(
+        parsedData.machines
+          .map(machine => String(machine).trim())
+          .filter(Boolean)
+      )
+    ];
+
+    if (!state.machines.length) {
+      state.machines = [...defaultMachines];
+    }
+
+    state.operators = parsedData.operators
+      .map(normalizeStoredOperator)
+      .filter(operator => operator.id && operator.name);
+
+    state.machineSettings =
+      parsedData.machineSettings &&
+      typeof parsedData.machineSettings === "object"
+        ? parsedData.machineSettings
+        : {};
+
+    state.trainingPlans = Array.isArray(
+      parsedData.trainingPlans
+    )
+      ? parsedData.trainingPlans
+      : [];
+
+    state.selectedOperatorId = null;
+    state.previousView = "dashboard";
+
+    saveState();
+  } catch (error) {
+    console.error(
+      "No fue posible cargar los datos guardados. Se utilizarán los datos iniciales:",
+      error
+    );
+
+    state = createDefaultState();
+    saveState();
+  }
+}
+
+loadState();
+
+/* =========================================================
+   CONSTANTES
+========================================================= */
 
 const pageTitles = {
   dashboard: "Dashboard",
@@ -98,6 +274,10 @@ const levelNames = {
   4: "Experto / Entrenador"
 };
 
+/* =========================================================
+   FUNCIONES GENERALES
+========================================================= */
+
 function getElement(id) {
   return document.getElementById(id);
 }
@@ -107,7 +287,7 @@ function familyOf(machine) {
 }
 
 function initials(name) {
-  return name
+  return String(name)
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
@@ -124,7 +304,10 @@ function normalizeText(value) {
     .trim();
 }
 
-function operatorAverage(operator, machines = state.machines) {
+function operatorAverage(
+  operator,
+  machines = state.machines
+) {
   if (!operator || !machines.length) {
     return 0;
   }
@@ -154,8 +337,31 @@ function scoreClass(percent) {
 
 function getCurrentView() {
   const activeView = document.querySelector(".view.active");
+
   return activeView ? activeView.id : "dashboard";
 }
+
+function formatDate(dateValue) {
+  if (!dateValue) {
+    return "Sin registrar";
+  }
+
+  const date = new Date(`${dateValue}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return dateValue;
+  }
+
+  return new Intl.DateTimeFormat("es-MX", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  }).format(date);
+}
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
 
 function setView(viewId) {
   const targetView = getElement(viewId);
@@ -165,7 +371,10 @@ function setView(viewId) {
   }
 
   document.querySelectorAll(".view").forEach(view => {
-    view.classList.toggle("active", view.id === viewId);
+    view.classList.toggle(
+      "active",
+      view.id === viewId
+    );
   });
 
   document.querySelectorAll(".nav-item").forEach(button => {
@@ -188,7 +397,13 @@ function setView(viewId) {
   });
 }
 
-function getLevelCounts(operators = state.operators) {
+/* =========================================================
+   CÁLCULOS
+========================================================= */
+
+function getLevelCounts(
+  operators = state.operators
+) {
   const counts = {
     0: 0,
     1: 0,
@@ -199,9 +414,16 @@ function getLevelCounts(operators = state.operators) {
 
   operators.forEach(operator => {
     state.machines.forEach(machine => {
-      const level = Number(operator.scores[machine] ?? 0);
+      const level = Number(
+        operator.scores[machine] ?? 0
+      );
 
-      if (Object.prototype.hasOwnProperty.call(counts, level)) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          counts,
+          level
+        )
+      ) {
         counts[level] += 1;
       }
     });
@@ -220,9 +442,16 @@ function getOperatorLevelCounts(operator) {
   };
 
   state.machines.forEach(machine => {
-    const level = Number(operator.scores[machine] ?? 0);
+    const level = Number(
+      operator.scores[machine] ?? 0
+    );
 
-    if (Object.prototype.hasOwnProperty.call(counts, level)) {
+    if (
+      Object.prototype.hasOwnProperty.call(
+        counts,
+        level
+      )
+    ) {
       counts[level] += 1;
     }
   });
@@ -230,51 +459,74 @@ function getOperatorLevelCounts(operator) {
   return counts;
 }
 
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
 function renderDashboard() {
   const machineCount = getElement("machineCount");
   const operatorCount = getElement("operatorCount");
   const certifiedCount = getElement("certifiedCount");
-  const criticalGapCount = getElement("criticalGapCount");
+  const criticalGapCount = getElement(
+    "criticalGapCount"
+  );
   const globalScore = getElement("globalScore");
 
   if (machineCount) {
-    machineCount.textContent = state.machines.length;
+    machineCount.textContent =
+      state.machines.length;
   }
+
+  const activeOperators = state.operators.filter(
+    operator => operator.status !== "Inactivo"
+  );
 
   if (operatorCount) {
-    operatorCount.textContent = state.operators.length;
+    operatorCount.textContent =
+      activeOperators.length;
   }
 
-  const averages = state.operators.map(operator => {
+  const averages = activeOperators.map(operator => {
     return operatorAverage(operator);
   });
 
   const overall = averages.length
-    ? averages.reduce((sum, value) => sum + value, 0) /
-      averages.length
+    ? averages.reduce(
+        (sum, value) => sum + value,
+        0
+      ) / averages.length
     : 0;
 
   if (globalScore) {
-    globalScore.textContent = `${pctFromLevel(overall)}%`;
+    globalScore.textContent =
+      `${pctFromLevel(overall)}%`;
   }
 
-  const certifiedOperators = state.operators.filter(operator => {
-    return operatorAverage(operator) >= 3;
-  }).length;
+  const certifiedOperators =
+    activeOperators.filter(operator => {
+      return operatorAverage(operator) >= 3;
+    }).length;
 
   if (certifiedCount) {
-    certifiedCount.textContent = certifiedOperators;
+    certifiedCount.textContent =
+      certifiedOperators;
   }
 
   const gaps = [];
 
   state.machines.forEach(machine => {
-    const total = state.operators.reduce((sum, operator) => {
-      return sum + Number(operator.scores[machine] ?? 0);
-    }, 0);
+    const total = activeOperators.reduce(
+      (sum, operator) => {
+        return (
+          sum +
+          Number(operator.scores[machine] ?? 0)
+        );
+      },
+      0
+    );
 
-    const average = state.operators.length
-      ? total / state.operators.length
+    const average = activeOperators.length
+      ? total / activeOperators.length
       : 0;
 
     if (average < 2) {
@@ -289,18 +541,20 @@ function renderDashboard() {
     criticalGapCount.textContent = gaps.length;
   }
 
-  renderLevelCounters();
-  renderLevelDistribution();
-  renderFamilyCoverage();
+  renderLevelCounters(activeOperators);
+  renderLevelDistribution(activeOperators);
+  renderFamilyCoverage(activeOperators);
   renderPriorityList(gaps);
-  renderOperatorSummary();
+  renderOperatorSummary(activeOperators);
 }
 
-function renderLevelCounters() {
-  const counts = getLevelCounts();
+function renderLevelCounters(operators) {
+  const counts = getLevelCounts(operators);
 
   for (let level = 0; level <= 4; level += 1) {
-    const element = getElement(`level${level}Count`);
+    const element = getElement(
+      `level${level}Count`
+    );
 
     if (element) {
       element.textContent = counts[level];
@@ -308,14 +562,17 @@ function renderLevelCounters() {
   }
 }
 
-function renderLevelDistribution() {
-  const container = getElement("levelDistribution");
+function renderLevelDistribution(operators) {
+  const container = getElement(
+    "levelDistribution"
+  );
 
   if (!container) {
     return;
   }
 
-  const counts = getLevelCounts();
+  const counts = getLevelCounts(operators);
+
   const total = Object.values(counts).reduce(
     (sum, count) => sum + count,
     0
@@ -325,12 +582,14 @@ function renderLevelDistribution() {
     .map(levelKey => {
       const level = Number(levelKey);
       const count = counts[level];
+
       const percentage = total
         ? Math.round((count / total) * 100)
         : 0;
 
       return `
         <div class="level-distribution-row">
+
           <div class="level-distribution-label">
             <i class="level-dot level-${level}"></i>
             <span>Nivel ${level}</span>
@@ -346,13 +605,14 @@ function renderLevelDistribution() {
           <div class="level-distribution-value">
             ${count}
           </div>
+
         </div>
       `;
     })
     .join("");
 }
 
-function renderFamilyCoverage() {
+function renderFamilyCoverage(operators) {
   const coverage = getElement("familyCoverage");
 
   if (!coverage) {
@@ -365,24 +625,34 @@ function renderFamilyCoverage() {
 
   coverage.innerHTML = families
     .map(family => {
-      const familyMachines = state.machines.filter(machine => {
-        return familyOf(machine) === family;
-      });
+      const familyMachines =
+        state.machines.filter(machine => {
+          return familyOf(machine) === family;
+        });
 
-      const total = state.operators.reduce((sum, operator) => {
-        return (
-          sum + operatorAverage(operator, familyMachines)
-        );
-      }, 0);
+      const total = operators.reduce(
+        (sum, operator) => {
+          return (
+            sum +
+            operatorAverage(
+              operator,
+              familyMachines
+            )
+          );
+        },
+        0
+      );
 
-      const average = state.operators.length
-        ? total / state.operators.length
+      const average = operators.length
+        ? total / operators.length
         : 0;
 
-      const percentage = pctFromLevel(average);
+      const percentage =
+        pctFromLevel(average);
 
       return `
         <div class="coverage-row">
+
           <strong>${family}</strong>
 
           <div class="progress-track">
@@ -393,6 +663,7 @@ function renderFamilyCoverage() {
           </div>
 
           <span>${percentage}%</span>
+
         </div>
       `;
     })
@@ -400,14 +671,19 @@ function renderFamilyCoverage() {
 }
 
 function renderPriorityList(gaps) {
-  const priorityList = getElement("priorityList");
+  const priorityList = getElement(
+    "priorityList"
+  );
 
   if (!priorityList) {
     return;
   }
 
   const orderedGaps = [...gaps]
-    .sort((first, second) => first.avg - second.avg)
+    .sort(
+      (first, second) =>
+        first.avg - second.avg
+    )
     .slice(0, 5);
 
   if (!orderedGaps.length) {
@@ -424,30 +700,36 @@ function renderPriorityList(gaps) {
     .map(item => {
       return `
         <div class="priority-item">
+
           <div>
             <strong>${item.machine}</strong>
+
             <small>
-              Nivel promedio ${item.avg.toFixed(1)} de 4
+              Nivel promedio
+              ${item.avg.toFixed(1)} de 4
             </small>
           </div>
 
           <span class="priority-badge">
             ALTA
           </span>
+
         </div>
       `;
     })
     .join("");
 }
 
-function renderOperatorSummary() {
-  const container = getElement("operatorSummary");
+function renderOperatorSummary(operators) {
+  const container = getElement(
+    "operatorSummary"
+  );
 
   if (!container) {
     return;
   }
 
-  container.innerHTML = state.operators
+  container.innerHTML = operators
     .map(operator => {
       const percent = pctFromLevel(
         operatorAverage(operator)
@@ -460,22 +742,30 @@ function renderOperatorSummary() {
           role="button"
           tabindex="0"
         >
+
           <div class="operator-meta">
+
             <div class="avatar">
               ${initials(operator.name)}
             </div>
 
             <div>
               <strong>${operator.name}</strong>
+
               <small>
-                ${operator.role} · ${operator.shift}
+                ${operator.role} ·
+                ${operator.shift}
               </small>
             </div>
+
           </div>
 
-          <span class="score-pill ${scoreClass(percent)}">
+          <span
+            class="score-pill ${scoreClass(percent)}"
+          >
             ${percent}%
           </span>
+
         </div>
       `;
     })
@@ -485,47 +775,72 @@ function renderOperatorSummary() {
     .querySelectorAll("[data-operator-id]")
     .forEach(element => {
       element.addEventListener("click", () => {
-        openOperatorProfile(element.dataset.operatorId);
+        openOperatorProfile(
+          element.dataset.operatorId
+        );
       });
 
-      element.addEventListener("keydown", event => {
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
-          event.preventDefault();
-          openOperatorProfile(
-            element.dataset.operatorId
-          );
+      element.addEventListener(
+        "keydown",
+        event => {
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+            event.preventDefault();
+
+            openOperatorProfile(
+              element.dataset.operatorId
+            );
+          }
         }
-      });
+      );
     });
 }
 
+/* =========================================================
+   MATRIZ
+========================================================= */
+
 function renderMatrix() {
-  const familyFilter = getElement("matrixFamilyFilter");
+  const familyFilter = getElement(
+    "matrixFamilyFilter"
+  );
+
   const matrixHead = getElement("matrixHead");
   const matrixBody = getElement("matrixBody");
 
-  if (!familyFilter || !matrixHead || !matrixBody) {
+  if (
+    !familyFilter ||
+    !matrixHead ||
+    !matrixBody
+  ) {
     return;
   }
 
-  const selectedFamily = familyFilter.value;
+  const selectedFamily =
+    familyFilter.value;
 
   const machines =
     selectedFamily === "all"
       ? state.machines
       : state.machines.filter(machine => {
-          return familyOf(machine) === selectedFamily;
+          return (
+            familyOf(machine) ===
+            selectedFamily
+          );
         });
 
   matrixHead.innerHTML = `
     <tr>
       <th>Operador</th>
+
       ${machines
-        .map(machine => `<th>${machine}</th>`)
+        .map(machine => {
+          return `<th>${machine}</th>`;
+        })
         .join("")}
+
       <th>Promedio</th>
     </tr>
   `;
@@ -539,7 +854,9 @@ function renderMatrix() {
 
       return `
         <tr>
+
           <td>
+
             <button
               class="matrix-operator-link text-btn"
               type="button"
@@ -551,8 +868,10 @@ function renderMatrix() {
             <br>
 
             <small>
-              ${operator.id} · ${operator.shift}
+              ${operator.id} ·
+              ${operator.shift}
             </small>
+
           </td>
 
           ${machines
@@ -562,7 +881,10 @@ function renderMatrix() {
 
               return `
                 <td>
-                  <span class="skill-level level-${level}">
+                  <span
+                    class="skill-level level-${level}"
+                    title="${levelNames[level]}"
+                  >
                     ${level}
                   </span>
                 </td>
@@ -571,8 +893,11 @@ function renderMatrix() {
             .join("")}
 
           <td>
-            <strong>${average.toFixed(1)}</strong>
+            <strong>
+              ${average.toFixed(1)}
+            </strong>
           </td>
+
         </tr>
       `;
     })
@@ -582,13 +907,23 @@ function renderMatrix() {
     .querySelectorAll("[data-operator-id]")
     .forEach(button => {
       button.addEventListener("click", () => {
-        openOperatorProfile(button.dataset.operatorId);
+        openOperatorProfile(
+          button.dataset.operatorId
+        );
       });
     });
 }
 
-function renderOperators(operators = state.operators) {
-  const operatorCards = getElement("operatorCards");
+/* =========================================================
+   OPERADORES
+========================================================= */
+
+function renderOperators(
+  operators = state.operators
+) {
+  const operatorCards = getElement(
+    "operatorCards"
+  );
 
   if (!operatorCards) {
     return;
@@ -606,14 +941,18 @@ function renderOperators(operators = state.operators) {
 
   operatorCards.innerHTML = operators
     .map(operator => {
-      const average = operatorAverage(operator);
-      const percentage = pctFromLevel(average);
+      const average =
+        operatorAverage(operator);
 
-      const certifiedMachines = state.machines.filter(
-        machine => {
-          return operator.scores[machine] >= 3;
-        }
-      ).length;
+      const percentage =
+        pctFromLevel(average);
+
+      const certifiedMachines =
+        state.machines.filter(machine => {
+          return (
+            operator.scores[machine] >= 3
+          );
+        }).length;
 
       return `
         <article
@@ -622,7 +961,9 @@ function renderOperators(operators = state.operators) {
           role="button"
           tabindex="0"
         >
+
           <div class="person-header">
+
             <div class="avatar">
               ${initials(operator.name)}
             </div>
@@ -631,28 +972,59 @@ function renderOperators(operators = state.operators) {
               <h4>${operator.name}</h4>
 
               <div class="card-subtitle">
-                ${operator.id} · ${operator.role}
+                ${operator.id} ·
+                ${operator.role}
               </div>
             </div>
+
+          </div>
+
+          <div class="card-subtitle">
+            ${operator.area} ·
+            ${operator.shift}
+          </div>
+
+          <div class="card-subtitle">
+            Supervisor:
+            ${operator.supervisor}
+          </div>
+
+          <div class="card-subtitle">
+            Ingreso:
+            ${formatDate(operator.hireDate)}
+            · ${operator.status}
           </div>
 
           <div class="card-metrics">
+
             <div class="metric-box">
               <span>Competencia</span>
-              <strong>${percentage}%</strong>
+
+              <strong>
+                ${percentage}%
+              </strong>
+
               <small>
-                Nivel promedio ${average.toFixed(1)}
+                Nivel promedio
+                ${average.toFixed(1)}
               </small>
             </div>
 
             <div class="metric-box">
               <span>Certificaciones</span>
-              <strong>${certifiedMachines}</strong>
+
+              <strong>
+                ${certifiedMachines}
+              </strong>
+
               <small>
-                de ${state.machines.length} máquinas
+                de ${state.machines.length}
+                máquinas
               </small>
             </div>
+
           </div>
+
         </article>
       `;
     })
@@ -662,24 +1034,43 @@ function renderOperators(operators = state.operators) {
     .querySelectorAll("[data-operator-id]")
     .forEach(card => {
       card.addEventListener("click", () => {
-        openOperatorProfile(card.dataset.operatorId);
+        openOperatorProfile(
+          card.dataset.operatorId
+        );
       });
 
-      card.addEventListener("keydown", event => {
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
-          event.preventDefault();
-          openOperatorProfile(card.dataset.operatorId);
+      card.addEventListener(
+        "keydown",
+        event => {
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+            event.preventDefault();
+
+            openOperatorProfile(
+              card.dataset.operatorId
+            );
+          }
         }
-      });
+      );
     });
 }
 
-function renderMachines(machinesToRender = null) {
-  const machineCards = getElement("machineCards");
-  const familyFilter = getElement("machineFamilyFilter");
+/* =========================================================
+   MÁQUINAS
+========================================================= */
+
+function renderMachines(
+  machinesToRender = null
+) {
+  const machineCards = getElement(
+    "machineCards"
+  );
+
+  const familyFilter = getElement(
+    "machineFamilyFilter"
+  );
 
   if (!machineCards || !familyFilter) {
     return;
@@ -690,13 +1081,17 @@ function renderMachines(machinesToRender = null) {
   if (Array.isArray(machinesToRender)) {
     machines = machinesToRender;
   } else {
-    const selectedFamily = familyFilter.value;
+    const selectedFamily =
+      familyFilter.value;
 
     machines =
       selectedFamily === "all"
         ? state.machines
         : state.machines.filter(machine => {
-            return familyOf(machine) === selectedFamily;
+            return (
+              familyOf(machine) ===
+              selectedFamily
+            );
           });
   }
 
@@ -714,14 +1109,19 @@ function renderMachines(machinesToRender = null) {
     .map(machine => {
       const competentOperators =
         state.operators.filter(operator => {
-          return operator.scores[machine] >= 3;
-        }).length;
+          return (
+            operator.status !== "Inactivo" &&
+            operator.scores[machine] >= 3
+          );
+        });
 
       const total = state.operators.reduce(
         (sum, operator) => {
           return (
             sum +
-            Number(operator.scores[machine] ?? 0)
+            Number(
+              operator.scores[machine] ?? 0
+            )
           );
         },
         0
@@ -731,9 +1131,46 @@ function renderMachines(machinesToRender = null) {
         ? total / state.operators.length
         : 0;
 
+      const settings =
+        state.machineSettings[machine] || {};
+
+      const minimumCoverage =
+        Number(settings.minimumCoverage ?? 2);
+
+      const shiftsCovered = [
+        ...new Set(
+          competentOperators.map(
+            operator => operator.shift
+          )
+        )
+      ];
+
+      const experts =
+        competentOperators.filter(operator => {
+          return (
+            operator.scores[machine] >= 4
+          );
+        });
+
+      let risk = "Bajo";
+
+      if (
+        competentOperators.length <
+        minimumCoverage
+      ) {
+        risk = "Alto";
+      } else if (
+        competentOperators.length ===
+        minimumCoverage
+      ) {
+        risk = "Medio";
+      }
+
       return `
         <article class="machine-card">
+
           <div class="machine-header">
+
             <div class="machine-family">
               ${familyOf(machine)}
             </div>
@@ -749,29 +1186,83 @@ function renderMachines(machinesToRender = null) {
             <span class="machine-status">
               ACTIVA
             </span>
+
           </div>
 
           <div class="card-metrics">
+
             <div class="metric-box">
-              <span>Operadores competentes</span>
-              <strong>${competentOperators}</strong>
-              <small>Nivel 3 o superior</small>
+              <span>
+                Operadores certificados
+              </span>
+
+              <strong>
+                ${competentOperators.length}
+              </strong>
+
+              <small>
+                Cobertura mínima:
+                ${minimumCoverage}
+              </small>
             </div>
 
             <div class="metric-box">
               <span>Nivel promedio</span>
-              <strong>${average.toFixed(1)}</strong>
-              <small>Escala de 0 a 4</small>
+
+              <strong>
+                ${average.toFixed(1)}
+              </strong>
+
+              <small>
+                Escala de 0 a 4
+              </small>
             </div>
+
+            <div class="metric-box">
+              <span>Turnos cubiertos</span>
+
+              <strong>
+                ${shiftsCovered.length}
+              </strong>
+
+              <small>
+                ${
+                  shiftsCovered.join(", ") ||
+                  "Sin cobertura"
+                }
+              </small>
+            </div>
+
+            <div class="metric-box">
+              <span>Riesgo de cobertura</span>
+
+              <strong>${risk}</strong>
+
+              <small>
+                ${
+                  experts.length
+                    ? `Entrenador: ${experts[0].name}`
+                    : "Sin entrenador asignado"
+                }
+              </small>
+            </div>
+
           </div>
+
         </article>
       `;
     })
     .join("");
 }
 
+/* =========================================================
+   CAPACITACIÓN
+========================================================= */
+
 function renderTraining() {
-  const trainingTable = getElement("trainingTable");
+  const trainingTable = getElement(
+    "trainingTable"
+  );
 
   if (!trainingTable) {
     return;
@@ -780,6 +1271,10 @@ function renderTraining() {
   const rows = [];
 
   state.operators.forEach(operator => {
+    if (operator.status === "Inactivo") {
+      return;
+    }
+
     state.machines.forEach(machine => {
       const currentLevel =
         operator.scores[machine] ?? 0;
@@ -790,8 +1285,17 @@ function renderTraining() {
           operatorName: operator.name,
           machine,
           current: currentLevel,
+          target: 2,
+          responsible:
+            operator.supervisor ||
+            "Sin asignar",
+          dueDate: "",
+          status: "Pendiente",
+          evidence: "Sin evidencia",
           priority:
-            currentLevel === 0 ? "Alta" : "Media"
+            currentLevel === 0
+              ? "Alta"
+              : "Media"
         });
       }
     });
@@ -818,21 +1322,43 @@ function renderTraining() {
   }
 
   trainingTable.innerHTML = rows
-    .slice(0, 18)
+    .slice(0, 24)
     .map(row => {
       return `
         <div class="training-item">
+
           <div>
+
             <strong>
-              ${row.operatorName} · ${row.machine}
+              ${row.operatorName} ·
+              ${row.machine}
             </strong>
 
             <br>
 
             <small>
-              Nivel actual: ${row.current}
-              · Objetivo inicial: 2
+              Nivel actual:
+              ${row.current}
+              · Nivel objetivo:
+              ${row.target}
             </small>
+
+            <br>
+
+            <small>
+              Responsable:
+              ${row.responsible}
+              · Estado:
+              ${row.status}
+            </small>
+
+            <br>
+
+            <small>
+              Evidencia:
+              ${row.evidence}
+            </small>
+
           </div>
 
           <span
@@ -844,11 +1370,16 @@ function renderTraining() {
           >
             ${row.priority}
           </span>
+
         </div>
       `;
     })
     .join("");
 }
+
+/* =========================================================
+   PERFIL DEL OPERADOR
+========================================================= */
 
 function openOperatorProfile(operatorId) {
   const operator = state.operators.find(item => {
@@ -879,16 +1410,33 @@ function renderOperatorProfile(operator) {
 
   const average = operatorAverage(operator);
   const percentage = pctFromLevel(average);
-  const levelCounts = getOperatorLevelCounts(operator);
 
-  const profileInitials = getElement("profileInitials");
-  const profileName = getElement("profileName");
+  const levelCounts =
+    getOperatorLevelCounts(operator);
+
+  const profileInitials = getElement(
+    "profileInitials"
+  );
+
+  const profileName = getElement(
+    "profileName"
+  );
+
   const profileEmployeeId = getElement(
     "profileEmployeeId"
   );
-  const profileRole = getElement("profileRole");
-  const profileShift = getElement("profileShift");
-  const profileScore = getElement("profileScore");
+
+  const profileRole = getElement(
+    "profileRole"
+  );
+
+  const profileShift = getElement(
+    "profileShift"
+  );
+
+  const profileScore = getElement(
+    "profileScore"
+  );
 
   if (profileInitials) {
     profileInitials.textContent = initials(
@@ -912,11 +1460,12 @@ function renderOperatorProfile(operator) {
 
   if (profileShift) {
     profileShift.textContent =
-      `Turno: ${operator.shift}`;
+      `${operator.shift} · ${operator.area} · ${operator.status}`;
   }
 
   if (profileScore) {
-    profileScore.textContent = `${percentage}%`;
+    profileScore.textContent =
+      `${percentage}%`;
   }
 
   renderProfileLevelSummary(levelCounts);
@@ -925,7 +1474,9 @@ function renderOperatorProfile(operator) {
 }
 
 function renderProfileLevelSummary(levelCounts) {
-  const container = getElement("profileLevelSummary");
+  const container = getElement(
+    "profileLevelSummary"
+  );
 
   if (!container) {
     return;
@@ -937,14 +1488,21 @@ function renderProfileLevelSummary(levelCounts) {
 
       return `
         <div class="profile-level-item">
+
           <i class="level-dot level-${level}"></i>
 
           <div>
             <strong>Nivel ${level}</strong>
-            <small>${levelNames[level]}</small>
+
+            <small>
+              ${levelNames[level]}
+            </small>
           </div>
 
-          <strong>${levelCounts[level]}</strong>
+          <strong>
+            ${levelCounts[level]}
+          </strong>
+
         </div>
       `;
     })
@@ -960,31 +1518,63 @@ function renderProfileMachineSkills(operator) {
     return;
   }
 
-  const orderedMachines = [...state.machines].sort(
-    (firstMachine, secondMachine) => {
-      const firstLevel =
-        operator.scores[firstMachine] ?? 0;
-      const secondLevel =
-        operator.scores[secondMachine] ?? 0;
+  const orderedMachines = [
+    ...state.machines
+  ].sort((firstMachine, secondMachine) => {
+    const firstLevel =
+      operator.scores[firstMachine] ?? 0;
 
-      if (firstLevel !== secondLevel) {
-        return secondLevel - firstLevel;
-      }
+    const secondLevel =
+      operator.scores[secondMachine] ?? 0;
 
-      return firstMachine.localeCompare(
-        secondMachine
-      );
+    if (firstLevel !== secondLevel) {
+      return secondLevel - firstLevel;
     }
-  );
+
+    return firstMachine.localeCompare(
+      secondMachine
+    );
+  });
 
   container.innerHTML = orderedMachines
     .map(machine => {
-      const level = operator.scores[machine] ?? 0;
-      const percentage = pctFromLevel(level);
+      const level =
+        operator.scores[machine] ?? 0;
+
+      const percentage =
+        pctFromLevel(level);
+
+      const certification =
+        operator.certifications?.[machine];
 
       return `
         <div class="profile-machine-row">
-          <strong>${machine}</strong>
+
+          <div>
+            <strong>${machine}</strong>
+
+            ${
+              certification
+                ? `
+                  <small>
+                    Certificado:
+                    ${formatDate(
+                      certification.certificationDate
+                    )}
+                    · Evaluador:
+                    ${
+                      certification.evaluator ||
+                      "Sin registrar"
+                    }
+                    · Vencimiento:
+                    ${formatDate(
+                      certification.expirationDate
+                    )}
+                  </small>
+                `
+                : ""
+            }
+          </div>
 
           <div class="progress-track">
             <div
@@ -998,6 +1588,7 @@ function renderProfileMachineSkills(operator) {
           >
             Nivel ${level}
           </span>
+
         </div>
       `;
     })
@@ -1005,7 +1596,9 @@ function renderProfileMachineSkills(operator) {
 }
 
 function renderProfileTraining(operator) {
-  const container = getElement("profileTraining");
+  const container = getElement(
+    "profileTraining"
+  );
 
   if (!container) {
     return;
@@ -1015,7 +1608,8 @@ function renderProfileTraining(operator) {
     .map(machine => {
       return {
         machine,
-        level: operator.scores[machine] ?? 0
+        level:
+          operator.scores[machine] ?? 0
       };
     })
     .filter(item => item.level < 2)
@@ -1032,8 +1626,7 @@ function renderProfileTraining(operator) {
   if (!trainingNeeds.length) {
     container.innerHTML = `
       <div class="empty-state">
-        El operador no presenta brechas críticas
-        de capacitación.
+        El operador no presenta brechas críticas de capacitación.
       </div>
     `;
 
@@ -1043,19 +1636,32 @@ function renderProfileTraining(operator) {
   container.innerHTML = trainingNeeds
     .map(item => {
       const priority =
-        item.level === 0 ? "Alta" : "Media";
+        item.level === 0
+          ? "Alta"
+          : "Media";
 
       return `
         <div class="profile-training-item">
+
           <div>
+
             <strong>${item.machine}</strong>
 
             <br>
 
             <small>
-              Nivel actual: ${item.level}
+              Nivel actual:
+              ${item.level}
               · Objetivo recomendado: 2
             </small>
+
+            <br>
+
+            <small>
+              Responsable:
+              ${operator.supervisor}
+            </small>
+
           </div>
 
           <span
@@ -1067,14 +1673,20 @@ function renderProfileTraining(operator) {
           >
             ${priority}
           </span>
+
         </div>
       `;
     })
     .join("");
 }
 
+/* =========================================================
+   BÚSQUEDA GLOBAL
+========================================================= */
+
 function searchOperators(query) {
-  const normalizedQuery = normalizeText(query);
+  const normalizedQuery =
+    normalizeText(query);
 
   if (!normalizedQuery) {
     return [];
@@ -1093,16 +1705,22 @@ function searchOperators(query) {
         operator.id,
         operator.role,
         operator.shift,
+        operator.area,
+        operator.supervisor,
+        operator.status,
         machineText
       ].join(" ")
     );
 
-    return searchableText.includes(normalizedQuery);
+    return searchableText.includes(
+      normalizedQuery
+    );
   });
 }
 
 function searchMachines(query) {
-  const normalizedQuery = normalizeText(query);
+  const normalizedQuery =
+    normalizeText(query);
 
   if (!normalizedQuery) {
     return [];
@@ -1116,21 +1734,27 @@ function searchMachines(query) {
 }
 
 function renderSearchResults(query) {
-  const searchResults = getElement("searchResults");
+  const searchResults = getElement(
+    "searchResults"
+  );
 
   if (!searchResults) {
     return;
   }
 
-  const normalizedQuery = normalizeText(query);
+  const normalizedQuery =
+    normalizeText(query);
 
   if (!normalizedQuery) {
     closeSearchResults();
     return;
   }
 
-  const matchingOperators = searchOperators(query);
-  const matchingMachines = searchMachines(query);
+  const matchingOperators =
+    searchOperators(query);
+
+  const matchingMachines =
+    searchMachines(query);
 
   const operatorResults = matchingOperators
     .slice(0, 6)
@@ -1142,17 +1766,25 @@ function renderSearchResults(query) {
           data-result-type="operator"
           data-result-id="${operator.id}"
         >
+
           <span class="search-result-avatar">
             ${initials(operator.name)}
           </span>
 
           <span class="search-result-info">
-            <strong>${operator.name}</strong>
+
+            <strong>
+              ${operator.name}
+            </strong>
+
             <small>
-              ${operator.id} · ${operator.role}
-              · ${operator.shift}
+              ${operator.id} ·
+              ${operator.role} ·
+              ${operator.shift}
             </small>
+
           </span>
+
         </button>
       `;
     })
@@ -1168,14 +1800,21 @@ function renderSearchResults(query) {
           data-result-type="machine"
           data-result-id="${machine}"
         >
+
           <span class="search-result-avatar">
             ${familyOf(machine)}
           </span>
 
           <span class="search-result-info">
+
             <strong>${machine}</strong>
-            <small>Máquina CNC activa</small>
+
+            <small>
+              Máquina CNC activa
+            </small>
+
           </span>
+
         </button>
       `;
     })
@@ -1203,7 +1842,9 @@ function renderSearchResults(query) {
       result.addEventListener("click", () => {
         const resultType =
           result.dataset.resultType;
-        const resultId = result.dataset.resultId;
+
+        const resultId =
+          result.dataset.resultId;
 
         if (resultType === "operator") {
           openOperatorProfile(resultId);
@@ -1231,7 +1872,9 @@ function showMachineSearchResult(machine) {
 }
 
 function closeSearchResults() {
-  const searchResults = getElement("searchResults");
+  const searchResults = getElement(
+    "searchResults"
+  );
 
   if (!searchResults) {
     return;
@@ -1242,7 +1885,9 @@ function closeSearchResults() {
 }
 
 function clearGlobalSearch() {
-  const globalSearch = getElement("globalSearch");
+  const globalSearch = getElement(
+    "globalSearch"
+  );
 
   if (globalSearch) {
     globalSearch.value = "";
@@ -1250,6 +1895,10 @@ function clearGlobalSearch() {
 
   closeSearchResults();
 }
+
+/* =========================================================
+   RENDERIZADO GENERAL
+========================================================= */
 
 function renderAll() {
   renderDashboard();
@@ -1259,19 +1908,25 @@ function renderAll() {
   renderTraining();
 
   if (state.selectedOperatorId) {
-    const selectedOperator = state.operators.find(
-      operator => {
+    const selectedOperator =
+      state.operators.find(operator => {
         return (
-          operator.id === state.selectedOperatorId
+          operator.id ===
+          state.selectedOperatorId
         );
-      }
-    );
+      });
 
     if (selectedOperator) {
-      renderOperatorProfile(selectedOperator);
+      renderOperatorProfile(
+        selectedOperator
+      );
     }
   }
 }
+
+/* =========================================================
+   EVENTOS DE NAVEGACIÓN
+========================================================= */
 
 document
   .querySelectorAll(".nav-item")
@@ -1290,6 +1945,10 @@ document
       setView(button.dataset.go);
     });
   });
+
+/* =========================================================
+   FILTROS
+========================================================= */
 
 const matrixFamilyFilter = getElement(
   "matrixFamilyFilter"
@@ -1313,19 +1972,35 @@ if (machineFamilyFilter) {
   );
 }
 
+/* =========================================================
+   ALTA DE OPERADORES
+========================================================= */
+
 const dialog = getElement("operatorDialog");
 
-["addOperatorBtn", "addOperatorBtn2"].forEach(id => {
-  const button = getElement(id);
+const addOperatorButton = getElement(
+  "addOperatorBtn2"
+);
 
-  if (button && dialog) {
-    button.addEventListener("click", () => {
+if (addOperatorButton && dialog) {
+  addOperatorButton.addEventListener(
+    "click",
+    () => {
+      const operatorForm =
+        getElement("operatorForm");
+
+      if (operatorForm) {
+        operatorForm.reset();
+      }
+
       dialog.showModal();
-    });
-  }
-});
+    }
+  );
+}
 
-const operatorForm = getElement("operatorForm");
+const operatorForm = getElement(
+  "operatorForm"
+);
 
 if (operatorForm && dialog) {
   operatorForm.addEventListener(
@@ -1342,42 +2017,64 @@ if (operatorForm && dialog) {
 
       event.preventDefault();
 
-      const operatorId = getElement("operatorId");
-      const operatorName = getElement(
-        "operatorName"
-      );
-      const operatorRole = getElement(
-        "operatorRole"
-      );
-      const operatorShift = getElement(
-        "operatorShift"
-      );
+      const operatorId =
+        getElement("operatorId");
+
+      const operatorName =
+        getElement("operatorName");
+
+      const operatorRole =
+        getElement("operatorRole");
+
+      const operatorShift =
+        getElement("operatorShift");
+
+      if (
+        !operatorId ||
+        !operatorName ||
+        !operatorRole ||
+        !operatorShift
+      ) {
+        return;
+      }
 
       const newOperator = {
         id: operatorId.value.trim(),
         name: operatorName.value.trim(),
         role: operatorRole.value,
         shift: operatorShift.value,
-        scores: {}
+        area: "Maquinado CNC",
+        supervisor: "Sin asignar",
+        hireDate: new Date()
+          .toISOString()
+          .slice(0, 10),
+        status: "Activo",
+        scores: {},
+        certifications: {},
+        trainingHistory: [],
+        developmentPlan: []
       };
 
-      if (!newOperator.id || !newOperator.name) {
+      if (
+        !newOperator.id ||
+        !newOperator.name
+      ) {
         return;
       }
 
-      const duplicateId = state.operators.some(
-        operator => {
+      const duplicateId =
+        state.operators.some(operator => {
           return (
             normalizeText(operator.id) ===
             normalizeText(newOperator.id)
           );
-        }
-      );
+        });
 
       if (duplicateId) {
         window.alert(
           "Ya existe un operador con ese número de empleado."
         );
+
         return;
       }
 
@@ -1386,6 +2083,8 @@ if (operatorForm && dialog) {
       });
 
       state.operators.push(newOperator);
+
+      saveState();
 
       operatorForm.reset();
       dialog.close();
@@ -1396,12 +2095,23 @@ if (operatorForm && dialog) {
   );
 }
 
-const globalSearch = getElement("globalSearch");
+/* =========================================================
+   BÚSQUEDA
+========================================================= */
+
+const globalSearch = getElement(
+  "globalSearch"
+);
 
 if (globalSearch) {
-  globalSearch.addEventListener("input", event => {
-    renderSearchResults(event.target.value);
-  });
+  globalSearch.addEventListener(
+    "input",
+    event => {
+      renderSearchResults(
+        event.target.value
+      );
+    }
+  );
 
   globalSearch.addEventListener(
     "keydown",
@@ -1411,9 +2121,10 @@ if (globalSearch) {
       }
 
       if (event.key === "Enter") {
-        const firstResult = document.querySelector(
-          ".search-result-item"
-        );
+        const firstResult =
+          document.querySelector(
+            ".search-result-item"
+          );
 
         if (firstResult) {
           event.preventDefault();
@@ -1426,7 +2137,9 @@ if (globalSearch) {
 
 document.addEventListener("click", event => {
   const searchContainer =
-    document.querySelector(".search-container");
+    document.querySelector(
+      ".search-container"
+    );
 
   if (
     searchContainer &&
@@ -1435,6 +2148,10 @@ document.addEventListener("click", event => {
     closeSearchResults();
   }
 });
+
+/* =========================================================
+   PERFIL
+========================================================= */
 
 const backToOperatorsButton = getElement(
   "backToOperatorsBtn"
@@ -1445,7 +2162,8 @@ if (backToOperatorsButton) {
     "click",
     () => {
       const returnView =
-        state.previousView === "operatorProfile"
+        state.previousView ===
+        "operatorProfile"
           ? "operators"
           : state.previousView;
 
@@ -1463,10 +2181,14 @@ if (editOperatorButton) {
     "click",
     () => {
       window.alert(
-        "La edición del operador se habilitará en la siguiente etapa."
+        "La edición completa del operador se agregará en la siguiente actualización."
       );
     }
   );
 }
+
+/* =========================================================
+   INICIALIZACIÓN
+========================================================= */
 
 renderAll();
