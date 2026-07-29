@@ -15,10 +15,7 @@
 
   <title>CNC Skills Portal</title>
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
   <link
     rel="preconnect"
@@ -31,10 +28,7 @@
     rel="stylesheet"
   >
 
-  <link
-    rel="stylesheet"
-    href="styles.css"
-  />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -45,9 +39,7 @@
 
       <div class="brand">
 
-        <div class="brand-mark">
-          SM
-        </div>
+        <div class="brand-mark">SM</div>
 
         <div>
           <h1>Skills Matrix</h1>
@@ -103,6 +95,24 @@
           <span class="nav-text">Capacitación</span>
         </button>
 
+        <button
+          class="nav-item"
+          data-view="history"
+          type="button"
+        >
+          <span class="nav-icon">↺</span>
+          <span class="nav-text">Historial</span>
+        </button>
+
+        <button
+          class="nav-item"
+          data-view="settings"
+          type="button"
+        >
+          <span class="nav-icon">◉</span>
+          <span class="nav-text">Configuración</span>
+        </button>
+
       </nav>
 
       <div class="sidebar-footer">
@@ -113,7 +123,7 @@
 
           <div>
             <strong>Sistema activo</strong>
-            <small>Versión 0.2</small>
+            <small>Versión 1.0</small>
           </div>
 
         </div>
@@ -170,12 +180,8 @@
       </header>
 
       <!-- DASHBOARD -->
-      <section
-        id="dashboard"
-        class="view active"
-      >
+      <section id="dashboard" class="view active">
 
-        <!-- HERO -->
         <div class="hero-card">
 
           <div>
@@ -192,154 +198,75 @@
 
           <div class="hero-score">
 
-            <span>
-              Competencia global
-            </span>
+            <span>Competencia global</span>
 
-            <strong id="globalScore">
-              74%
-            </strong>
+            <strong id="globalScore">74%</strong>
 
-            <small>
-              Meta sugerida: 85%
-            </small>
+            <small>Meta sugerida: 85%</small>
 
           </div>
 
         </div>
 
-        <!-- MAIN KPIS -->
         <div class="stats-grid skills-stats-grid">
 
           <article class="stat-card operators-stat">
 
-            <span class="stat-label">
-              Operadores
-            </span>
+            <span class="stat-label">Operadores</span>
 
-            <strong id="operatorCount">
-              6
-            </strong>
+            <strong id="operatorCount">6</strong>
 
-            <small>
-              Personal activo registrado
-            </small>
+            <small>Personal activo registrado</small>
 
           </article>
 
           <article class="stat-card level-stat level-stat-0">
-
-            <span class="stat-label">
-              Nivel 0
-            </span>
-
-            <strong id="level0Count">
-              0
-            </strong>
-
-            <small>
-              Sin entrenamiento
-            </small>
-
+            <span class="stat-label">Nivel 0</span>
+            <strong id="level0Count">0</strong>
+            <small>Sin entrenamiento</small>
           </article>
 
           <article class="stat-card level-stat level-stat-1">
-
-            <span class="stat-label">
-              Nivel 1
-            </span>
-
-            <strong id="level1Count">
-              0
-            </strong>
-
-            <small>
-              En entrenamiento
-            </small>
-
+            <span class="stat-label">Nivel 1</span>
+            <strong id="level1Count">0</strong>
+            <small>En entrenamiento</small>
           </article>
 
           <article class="stat-card level-stat level-stat-2">
-
-            <span class="stat-label">
-              Nivel 2
-            </span>
-
-            <strong id="level2Count">
-              0
-            </strong>
-
-            <small>
-              Opera con supervisión
-            </small>
-
+            <span class="stat-label">Nivel 2</span>
+            <strong id="level2Count">0</strong>
+            <small>Opera con supervisión</small>
           </article>
 
           <article class="stat-card level-stat level-stat-3">
-
-            <span class="stat-label">
-              Nivel 3
-            </span>
-
-            <strong id="level3Count">
-              0
-            </strong>
-
-            <small>
-              Competencias certificadas
-            </small>
-
+            <span class="stat-label">Nivel 3</span>
+            <strong id="level3Count">0</strong>
+            <small>Competencias certificadas</small>
           </article>
 
           <article class="stat-card level-stat level-stat-4">
-
-            <span class="stat-label">
-              Nivel 4
-            </span>
-
-            <strong id="level4Count">
-              0
-            </strong>
-
-            <small>
-              Expertos o entrenadores
-            </small>
-
+            <span class="stat-label">Nivel 4</span>
+            <strong id="level4Count">0</strong>
+            <small>Expertos o entrenadores</small>
           </article>
 
           <article class="stat-card warning">
-
-            <span class="stat-label">
-              Brechas críticas
-            </span>
-
-            <strong id="criticalGapCount">
-              5
-            </strong>
-
-            <small>
-              Requieren plan de acción
-            </small>
-
+            <span class="stat-label">Brechas críticas</span>
+            <strong id="criticalGapCount">5</strong>
+            <small>Requieren plan de acción</small>
           </article>
 
         </div>
 
-        <!-- LEVEL DISTRIBUTION -->
         <article class="panel level-distribution-panel">
 
           <div class="panel-header">
 
             <div>
-
               <span class="section-kicker">
                 Distribución de habilidades
               </span>
-
-              <h3>
-                Competencias por nivel
-              </h3>
-
+              <h3>Competencias por nivel</h3>
             </div>
 
             <span class="panel-note">
@@ -355,24 +282,15 @@
 
         </article>
 
-        <!-- DASHBOARD PANELS -->
         <div class="dashboard-grid">
 
-          <!-- COVERAGE -->
           <article class="panel">
 
             <div class="panel-header">
 
               <div>
-
-                <span class="section-kicker">
-                  Cobertura
-                </span>
-
-                <h3>
-                  Cobertura por familia de máquina
-                </h3>
-
+                <span class="section-kicker">Cobertura</span>
+                <h3>Cobertura por familia de máquina</h3>
               </div>
 
               <button
@@ -392,21 +310,13 @@
 
           </article>
 
-          <!-- PRIORITIES -->
           <article class="panel">
 
             <div class="panel-header">
 
               <div>
-
-                <span class="section-kicker">
-                  Prioridades
-                </span>
-
-                <h3>
-                  Brechas principales
-                </h3>
-
+                <span class="section-kicker">Prioridades</span>
+                <h3>Brechas principales</h3>
               </div>
 
               <button
@@ -428,21 +338,13 @@
 
         </div>
 
-        <!-- OPERATOR SUMMARY -->
         <article class="panel">
 
           <div class="panel-header">
 
             <div>
-
-              <span class="section-kicker">
-                Resumen
-              </span>
-
-              <h3>
-                Competencia por operador
-              </h3>
-
+              <span class="section-kicker">Resumen</span>
+              <h3>Competencia por operador</h3>
             </div>
 
             <button
@@ -465,10 +367,7 @@
       </section>
 
       <!-- SKILLS MATRIX -->
-      <section
-        id="matrix"
-        class="view"
-      >
+      <section id="matrix" class="view">
 
         <div class="toolbar">
 
@@ -478,39 +377,67 @@
               Vista principal
             </span>
 
-            <h3>
-              Matriz de habilidades
-            </h3>
+            <h3>Matriz de habilidades</h3>
 
           </div>
 
-          <div class="filter-group">
+          <div class="toolbar-actions">
 
-            <select id="matrixFamilyFilter">
+            <div class="filter-group">
 
-              <option value="all">
-                Todas las familias
-              </option>
+              <select
+                id="matrixOperatorFilter"
+                aria-label="Filtrar por operador"
+              >
+                <option value="all">
+                  Todos los operadores
+                </option>
+              </select>
 
-              <option value="CMV">
-                CMV
-              </option>
+              <select
+                id="matrixShiftFilter"
+                aria-label="Filtrar por turno"
+              >
+                <option value="all">Todos los turnos</option>
+                <option value="Turno A">Turno A</option>
+                <option value="Turno B">Turno B</option>
+                <option value="Turno C">Turno C</option>
+              </select>
 
-              <option value="TCN">
-                TCN
-              </option>
+              <select
+                id="matrixFamilyFilter"
+                aria-label="Filtrar por familia"
+              >
+                <option value="all">Todas las familias</option>
+                <option value="CMV">CMV</option>
+                <option value="TCN">TCN</option>
+                <option value="CMH">CMH</option>
+                <option value="RV">RV</option>
+              </select>
 
-              <option value="CMH">
-                CMH
-              </option>
+            </div>
 
-              <option value="RV">
-                RV
-              </option>
-
-            </select>
+            <button
+              id="exportMatrixBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              Exportar matriz
+            </button>
 
           </div>
+
+        </div>
+
+        <div class="matrix-help-bar">
+
+          <span>
+            Selecciona un nivel para actualizar la competencia.
+          </span>
+
+          <span>
+            Haz clic en el nombre para abrir el perfil.
+          </span>
 
         </div>
 
@@ -558,23 +485,13 @@
       </section>
 
       <!-- OPERATORS -->
-      <section
-        id="operators"
-        class="view"
-      >
+      <section id="operators" class="view">
 
         <div class="toolbar">
 
           <div>
-
-            <span class="section-kicker">
-              Personal
-            </span>
-
-            <h3>
-              Operadores registrados
-            </h3>
-
+            <span class="section-kicker">Personal</span>
+            <h3>Operadores registrados</h3>
           </div>
 
           <button
@@ -595,10 +512,7 @@
       </section>
 
       <!-- OPERATOR PROFILE -->
-      <section
-        id="operatorProfile"
-        class="view"
-      >
+      <section id="operatorProfile" class="view">
 
         <div class="profile-toolbar">
 
@@ -622,7 +536,7 @@
 
             <button
               id="deleteOperatorBtn"
-              class="secondary-btn"
+              class="secondary-btn danger-btn"
               type="button"
             >
               Eliminar operador
@@ -653,17 +567,9 @@
 
             <div class="profile-meta">
 
-              <span id="profileEmployeeId">
-                ID: —
-              </span>
-
-              <span id="profileRole">
-                Puesto: —
-              </span>
-
-              <span id="profileShift">
-                Turno: —
-              </span>
+              <span id="profileEmployeeId">ID: —</span>
+              <span id="profileRole">Puesto: —</span>
+              <span id="profileShift">Turno: —</span>
 
             </div>
 
@@ -671,35 +577,86 @@
 
           <div class="profile-score">
 
-            <span>
-              Competencia general
-            </span>
+            <span>Competencia general</span>
 
-            <strong id="profileScore">
-              0%
-            </strong>
+            <strong id="profileScore">0%</strong>
 
           </div>
 
         </article>
 
+        <!-- GENERAL INFORMATION -->
+        <article class="panel profile-information-panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="section-kicker">
+                Información general
+              </span>
+              <h3>Datos del colaborador</h3>
+            </div>
+
+          </div>
+
+          <div class="profile-information-grid">
+
+            <div class="profile-information-item">
+              <span>Área</span>
+              <strong id="profileArea">—</strong>
+            </div>
+
+            <div class="profile-information-item">
+              <span>Supervisor</span>
+              <strong id="profileSupervisor">—</strong>
+            </div>
+
+            <div class="profile-information-item">
+              <span>Fecha de ingreso</span>
+              <strong id="profileEntryDate">—</strong>
+            </div>
+
+            <div class="profile-information-item">
+              <span>Estatus</span>
+              <strong id="profileStatus">—</strong>
+            </div>
+
+          </div>
+
+        </article>
+
+        <!-- PROFILE KPIS -->
+        <div class="profile-kpi-grid">
+
+          <article class="profile-kpi-card">
+            <span>Máquinas certificadas</span>
+            <strong id="profileCertifiedCount">0</strong>
+            <small>Nivel 3 o superior</small>
+          </article>
+
+          <article class="profile-kpi-card">
+            <span>En entrenamiento</span>
+            <strong id="profileTrainingCount">0</strong>
+            <small>Niveles 1 y 2</small>
+          </article>
+
+          <article class="profile-kpi-card">
+            <span>Como entrenador</span>
+            <strong id="profileExpertCount">0</strong>
+            <small>Competencias nivel 4</small>
+          </article>
+
+        </div>
+
         <div class="profile-grid">
 
-          <!-- PROFILE LEVEL DISTRIBUTION -->
           <article class="panel">
 
             <div class="panel-header">
 
               <div>
-
-                <span class="section-kicker">
-                  Distribución
-                </span>
-
-                <h3>
-                  Resumen por nivel
-                </h3>
-
+                <span class="section-kicker">Distribución</span>
+                <h3>Resumen por nivel</h3>
               </div>
 
             </div>
@@ -711,21 +668,13 @@
 
           </article>
 
-          <!-- PROFILE MACHINE SKILLS -->
           <article class="panel profile-machines-panel">
 
             <div class="panel-header">
 
               <div>
-
-                <span class="section-kicker">
-                  Competencias
-                </span>
-
-                <h3>
-                  Nivel por máquina
-                </h3>
-
+                <span class="section-kicker">Competencias</span>
+                <h3>Nivel por máquina</h3>
               </div>
 
             </div>
@@ -739,20 +688,95 @@
 
         </div>
 
+        <div class="profile-detail-grid">
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <span class="section-kicker">Certificaciones</span>
+                <h3>Credenciales vigentes</h3>
+              </div>
+
+              <button
+                id="addCertificationBtn"
+                class="text-btn"
+                type="button"
+              >
+                + Agregar
+              </button>
+
+            </div>
+
+            <div
+              id="profileCertifications"
+              class="profile-certifications"
+            ></div>
+
+          </article>
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <span class="section-kicker">Historial</span>
+                <h3>Capacitación y evaluaciones</h3>
+              </div>
+
+              <button
+                id="addTrainingHistoryBtn"
+                class="text-btn"
+                type="button"
+              >
+                + Agregar
+              </button>
+
+            </div>
+
+            <div
+              id="profileHistory"
+              class="profile-history"
+            ></div>
+
+          </article>
+
+        </div>
+
         <article class="panel">
 
           <div class="panel-header">
 
             <div>
+              <span class="section-kicker">Plan de desarrollo</span>
+              <h3>Objetivos de competencia</h3>
+            </div>
 
-              <span class="section-kicker">
-                Desarrollo
-              </span>
+            <button
+              id="addDevelopmentPlanBtn"
+              class="text-btn"
+              type="button"
+            >
+              + Agregar objetivo
+            </button>
 
-              <h3>
-                Capacitaciones y brechas
-              </h3>
+          </div>
 
+          <div
+            id="profileDevelopmentPlan"
+            class="profile-development-plan"
+          ></div>
+
+        </article>
+
+        <article class="panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="section-kicker">Desarrollo</span>
+              <h3>Capacitaciones y brechas</h3>
             </div>
 
           </div>
@@ -767,48 +791,41 @@
       </section>
 
       <!-- MACHINES -->
-      <section
-        id="machines"
-        class="view"
-      >
+      <section id="machines" class="view">
 
         <div class="toolbar">
 
           <div>
-
             <span class="section-kicker">
               Inventario productivo
             </span>
-
-            <h3>
-              Máquinas activas
-            </h3>
-
+            <h3>Máquinas activas</h3>
           </div>
 
-          <select id="machineFamilyFilter">
+          <div class="toolbar-actions">
 
-            <option value="all">
-              Todas las familias
-            </option>
+            <select id="machineFamilyFilter">
 
-            <option value="CMV">
-              CMV
-            </option>
+              <option value="all">
+                Todas las familias
+              </option>
 
-            <option value="TCN">
-              TCN
-            </option>
+              <option value="CMV">CMV</option>
+              <option value="TCN">TCN</option>
+              <option value="CMH">CMH</option>
+              <option value="RV">RV</option>
 
-            <option value="CMH">
-              CMH
-            </option>
+            </select>
 
-            <option value="RV">
-              RV
-            </option>
+            <button
+              id="addMachineBtn"
+              class="primary-btn"
+              type="button"
+            >
+              + Nueva máquina
+            </button>
 
-          </select>
+          </div>
 
         </div>
 
@@ -820,22 +837,34 @@
       </section>
 
       <!-- TRAINING -->
-      <section
-        id="training"
-        class="view"
-      >
+      <section id="training" class="view">
 
         <div class="toolbar">
 
           <div>
+            <span class="section-kicker">Desarrollo</span>
+            <h3>Plan de capacitación</h3>
+          </div>
 
-            <span class="section-kicker">
-              Desarrollo
-            </span>
+          <div class="toolbar-actions">
 
-            <h3>
-              Plan de capacitación
-            </h3>
+            <select
+              id="trainingStatusFilter"
+              aria-label="Filtrar capacitación por estatus"
+            >
+              <option value="all">Todos los estatus</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="En proceso">En proceso</option>
+              <option value="Completado">Completado</option>
+            </select>
+
+            <button
+              id="exportTrainingBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              Exportar plan
+            </button>
 
           </div>
 
@@ -845,6 +874,164 @@
           id="trainingTable"
           class="training-list"
         ></div>
+
+      </section>
+
+      <!-- CHANGE HISTORY -->
+      <section id="history" class="view">
+
+        <div class="toolbar">
+
+          <div>
+            <span class="section-kicker">Trazabilidad</span>
+            <h3>Historial de cambios</h3>
+          </div>
+
+          <button
+            id="exportHistoryBtn"
+            class="secondary-btn"
+            type="button"
+          >
+            Exportar historial
+          </button>
+
+        </div>
+
+        <div class="panel">
+
+          <div
+            id="auditLog"
+            class="audit-log"
+          ></div>
+
+        </div>
+
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="view">
+
+        <div class="toolbar">
+
+          <div>
+            <span class="section-kicker">Administración</span>
+            <h3>Configuración del sistema</h3>
+          </div>
+
+        </div>
+
+        <div class="settings-grid">
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <span class="section-kicker">Catálogo</span>
+                <h3>Puestos</h3>
+              </div>
+
+              <button
+                id="addRoleBtn"
+                class="text-btn"
+                type="button"
+              >
+                + Agregar
+              </button>
+
+            </div>
+
+            <div id="roleCatalog" class="catalog-list"></div>
+
+          </article>
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <span class="section-kicker">Catálogo</span>
+                <h3>Turnos</h3>
+              </div>
+
+              <button
+                id="addShiftBtn"
+                class="text-btn"
+                type="button"
+              >
+                + Agregar
+              </button>
+
+            </div>
+
+            <div id="shiftCatalog" class="catalog-list"></div>
+
+          </article>
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <span class="section-kicker">Catálogo</span>
+                <h3>Áreas</h3>
+              </div>
+
+              <button
+                id="addAreaBtn"
+                class="text-btn"
+                type="button"
+              >
+                + Agregar
+              </button>
+
+            </div>
+
+            <div id="areaCatalog" class="catalog-list"></div>
+
+          </article>
+
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <span class="section-kicker">Sistema</span>
+                <h3>Respaldo de información</h3>
+              </div>
+
+            </div>
+
+            <div class="settings-actions">
+
+              <button
+                id="exportBackupBtn"
+                class="secondary-btn"
+                type="button"
+              >
+                Exportar respaldo
+              </button>
+
+              <button
+                id="importBackupBtn"
+                class="secondary-btn"
+                type="button"
+              >
+                Importar respaldo
+              </button>
+
+              <input
+                id="importBackupInput"
+                type="file"
+                accept=".json,application/json"
+                hidden
+              />
+
+            </div>
+
+          </article>
+
+        </div>
 
       </section>
 
@@ -862,13 +1049,10 @@
     <span id="certifiedCount">0</span>
   </div>
 
-  <!-- NEW OPERATOR DIALOG -->
+  <!-- OPERATOR DIALOG -->
   <dialog id="operatorDialog">
 
-    <form
-      method="dialog"
-      id="operatorForm"
-    >
+    <form method="dialog" id="operatorForm">
 
       <div class="dialog-header">
 
@@ -897,155 +1081,91 @@
 
       </div>
 
-      <input
-        type="hidden"
-        id="editingOperatorId"
-      />
+      <input type="hidden" id="editingOperatorId" />
 
       <div class="form-grid">
 
         <label>
-
           Nombre completo
-
           <input
             id="operatorName"
             required
             placeholder="Ej. Juan Pérez"
           />
-
         </label>
 
         <label>
-
           Número de empleado
-
           <input
             id="operatorId"
             required
             placeholder="Ej. OP-007"
           />
-
         </label>
 
         <label>
-
           Puesto
-
           <select id="operatorRole">
-
-            <option>
-              Operador CNC
-            </option>
-
-            <option>
-              Setup Technician
-            </option>
-
-            <option>
-              Líder de producción
-            </option>
-
-            <option>
-              Entrenador
-            </option>
-
+            <option>Operador CNC</option>
+            <option>Setup Technician</option>
+            <option>Líder de producción</option>
+            <option>Entrenador</option>
           </select>
-
         </label>
 
         <label>
-
           Turno
-
           <select id="operatorShift">
-
-            <option>
-              Turno A
-            </option>
-
-            <option>
-              Turno B
-            </option>
-
-            <option>
-              Turno C
-            </option>
-
+            <option>Turno A</option>
+            <option>Turno B</option>
+            <option>Turno C</option>
           </select>
-
         </label>
 
         <label>
-
           Área
-
           <input
             id="operatorArea"
             required
             placeholder="Ej. Maquinado CNC"
           />
-
         </label>
 
         <label>
-
           Supervisor
-
           <input
             id="operatorSupervisor"
             required
             placeholder="Ej. María López"
           />
-
         </label>
 
         <label>
-
           Fecha de ingreso
-
           <input
             id="operatorEntryDate"
             type="date"
             required
           />
-
         </label>
 
         <label>
-
           Estatus
-
           <select id="operatorStatus">
-
-            <option value="Activo">
-              Activo
-            </option>
-
+            <option value="Activo">Activo</option>
             <option value="En capacitación">
               En capacitación
             </option>
-
-            <option value="Ausencia">
-              Ausencia
-            </option>
-
-            <option value="Inactivo">
-              Inactivo
-            </option>
-
+            <option value="Ausencia">Ausencia</option>
+            <option value="Inactivo">Inactivo</option>
           </select>
-
         </label>
 
       </div>
 
       <div class="dialog-actions">
 
-        <button
-          class="secondary-btn"
-          value="cancel"
-        >
+        <button class="secondary-btn" value="cancel">
           Cancelar
         </button>
 
@@ -1055,6 +1175,432 @@
           value="default"
         >
           Guardar operador
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- MACHINE DIALOG -->
+  <dialog id="machineDialog">
+
+    <form method="dialog" id="machineForm">
+
+      <div class="dialog-header">
+
+        <div>
+          <span
+            id="machineDialogKicker"
+            class="section-kicker"
+          >
+            Inventario productivo
+          </span>
+
+          <h3 id="machineDialogTitle">
+            Nueva máquina
+          </h3>
+        </div>
+
+        <button
+          class="icon-btn"
+          value="cancel"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <input type="hidden" id="editingMachineId" />
+
+      <div class="form-grid">
+
+        <label>
+          Identificador de máquina
+          <input
+            id="machineId"
+            required
+            placeholder="Ej. CMV-007"
+          />
+        </label>
+
+        <label>
+          Familia
+          <input
+            id="machineFamily"
+            required
+            placeholder="Ej. CMV"
+          />
+        </label>
+
+        <label>
+          Cobertura mínima
+          <input
+            id="machineMinimumCoverage"
+            type="number"
+            min="1"
+            value="2"
+            required
+          />
+        </label>
+
+        <label>
+          Estatus
+          <select id="machineStatus">
+            <option value="Activa">Activa</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Inactiva">Inactiva</option>
+          </select>
+        </label>
+
+      </div>
+
+      <div class="dialog-actions">
+
+        <button class="secondary-btn" value="cancel">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          id="saveMachineBtn"
+          value="default"
+        >
+          Guardar máquina
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- CERTIFICATION DIALOG -->
+  <dialog id="certificationDialog">
+
+    <form method="dialog" id="certificationForm">
+
+      <div class="dialog-header">
+
+        <div>
+          <span class="section-kicker">Certificación</span>
+          <h3>Registrar certificación</h3>
+        </div>
+
+        <button
+          class="icon-btn"
+          value="cancel"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="form-grid">
+
+        <label>
+          Máquina
+          <select id="certificationMachine" required></select>
+        </label>
+
+        <label>
+          Evaluador
+          <input
+            id="certificationEvaluator"
+            required
+            placeholder="Nombre del evaluador"
+          />
+        </label>
+
+        <label>
+          Fecha de certificación
+          <input
+            id="certificationDate"
+            type="date"
+            required
+          />
+        </label>
+
+        <label>
+          Fecha de vencimiento
+          <input
+            id="certificationExpiration"
+            type="date"
+          />
+        </label>
+
+        <label class="form-span-2">
+          Evidencia
+          <input
+            id="certificationEvidence"
+            placeholder="Documento, liga o referencia"
+          />
+        </label>
+
+      </div>
+
+      <div class="dialog-actions">
+
+        <button class="secondary-btn" value="cancel">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          id="saveCertificationBtn"
+          value="default"
+        >
+          Guardar certificación
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- TRAINING HISTORY DIALOG -->
+  <dialog id="trainingHistoryDialog">
+
+    <form method="dialog" id="trainingHistoryForm">
+
+      <div class="dialog-header">
+
+        <div>
+          <span class="section-kicker">Historial</span>
+          <h3>Registrar capacitación</h3>
+        </div>
+
+        <button
+          class="icon-btn"
+          value="cancel"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="form-grid">
+
+        <label>
+          Fecha
+          <input
+            id="historyDate"
+            type="date"
+            required
+          />
+        </label>
+
+        <label>
+          Tipo
+          <select id="historyType">
+            <option value="Capacitación">Capacitación</option>
+            <option value="Evaluación">Evaluación</option>
+            <option value="Recertificación">Recertificación</option>
+          </select>
+        </label>
+
+        <label>
+          Máquina
+          <select id="historyMachine"></select>
+        </label>
+
+        <label>
+          Responsable
+          <input
+            id="historyResponsible"
+            required
+            placeholder="Nombre del responsable"
+          />
+        </label>
+
+        <label class="form-span-2">
+          Descripción
+          <textarea
+            id="historyDescription"
+            rows="3"
+            required
+            placeholder="Resultado, tema o evidencia"
+          ></textarea>
+        </label>
+
+      </div>
+
+      <div class="dialog-actions">
+
+        <button class="secondary-btn" value="cancel">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          id="saveTrainingHistoryBtn"
+          value="default"
+        >
+          Guardar registro
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- DEVELOPMENT PLAN DIALOG -->
+  <dialog id="developmentPlanDialog">
+
+    <form method="dialog" id="developmentPlanForm">
+
+      <div class="dialog-header">
+
+        <div>
+          <span class="section-kicker">Desarrollo</span>
+          <h3>Nuevo objetivo</h3>
+        </div>
+
+        <button
+          class="icon-btn"
+          value="cancel"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="form-grid">
+
+        <label>
+          Máquina
+          <select id="developmentMachine" required></select>
+        </label>
+
+        <label>
+          Nivel objetivo
+          <select id="developmentTargetLevel">
+            <option value="1">Nivel 1</option>
+            <option value="2">Nivel 2</option>
+            <option value="3">Nivel 3</option>
+            <option value="4">Nivel 4</option>
+          </select>
+        </label>
+
+        <label>
+          Responsable
+          <input
+            id="developmentResponsible"
+            required
+            placeholder="Supervisor o entrenador"
+          />
+        </label>
+
+        <label>
+          Fecha objetivo
+          <input
+            id="developmentTargetDate"
+            type="date"
+            required
+          />
+        </label>
+
+        <label>
+          Prioridad
+          <select id="developmentPriority">
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+          </select>
+        </label>
+
+        <label>
+          Estatus
+          <select id="developmentStatus">
+            <option value="Pendiente">Pendiente</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Completado">Completado</option>
+          </select>
+        </label>
+
+        <label class="form-span-2">
+          Evidencia requerida
+          <textarea
+            id="developmentEvidence"
+            rows="3"
+            placeholder="Evaluación, práctica, documento o certificación"
+          ></textarea>
+        </label>
+
+      </div>
+
+      <div class="dialog-actions">
+
+        <button class="secondary-btn" value="cancel">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          id="saveDevelopmentPlanBtn"
+          value="default"
+        >
+          Guardar objetivo
+        </button>
+
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- GENERIC CATALOG DIALOG -->
+  <dialog id="catalogDialog">
+
+    <form method="dialog" id="catalogForm">
+
+      <div class="dialog-header">
+
+        <div>
+          <span class="section-kicker">Configuración</span>
+          <h3 id="catalogDialogTitle">Nuevo elemento</h3>
+        </div>
+
+        <button
+          class="icon-btn"
+          value="cancel"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <input type="hidden" id="catalogType" />
+
+      <label>
+        Nombre
+        <input
+          id="catalogValue"
+          required
+          placeholder="Escribe el valor"
+        />
+      </label>
+
+      <div class="dialog-actions">
+
+        <button class="secondary-btn" value="cancel">
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          id="saveCatalogBtn"
+          value="default"
+        >
+          Guardar
         </button>
 
       </div>
