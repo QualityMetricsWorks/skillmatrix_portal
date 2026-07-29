@@ -2,298 +2,987 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Portal de matriz de habilidades para operadores CNC" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="Portal de matriz de habilidades para operadores CNC"
+  />
+
   <title>CNC Skills Portal</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  />
 </head>
+
 <body>
   <div class="app-shell">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
+
       <div class="brand">
-        <div class="brand-mark">SM</div>
+
+        <div class="brand-mark">
+          SM
+        </div>
+
         <div>
           <h1>Skills Matrix</h1>
           <span>CNC Operations</span>
         </div>
+
       </div>
 
       <nav class="nav">
-        <button class="nav-item active" data-view="dashboard">
+
+        <button
+          class="nav-item active"
+          data-view="dashboard"
+          type="button"
+        >
           <span class="nav-icon">◫</span>
-          Dashboard
+          <span class="nav-text">Dashboard</span>
         </button>
-        <button class="nav-item" data-view="matrix">
+
+        <button
+          class="nav-item"
+          data-view="matrix"
+          type="button"
+        >
           <span class="nav-icon">▦</span>
-          Matriz
+          <span class="nav-text">Matriz</span>
         </button>
-        <button class="nav-item" data-view="operators">
+
+        <button
+          class="nav-item"
+          data-view="operators"
+          type="button"
+        >
           <span class="nav-icon">●</span>
-          Operadores
+          <span class="nav-text">Operadores</span>
         </button>
-        <button class="nav-item" data-view="machines">
+
+        <button
+          class="nav-item"
+          data-view="machines"
+          type="button"
+        >
           <span class="nav-icon">⚙</span>
-          Máquinas
+          <span class="nav-text">Máquinas</span>
         </button>
-        <button class="nav-item" data-view="training">
+
+        <button
+          class="nav-item"
+          data-view="training"
+          type="button"
+        >
           <span class="nav-icon">◆</span>
-          Capacitación
+          <span class="nav-text">Capacitación</span>
         </button>
+
       </nav>
 
       <div class="sidebar-footer">
+
         <div class="system-status">
+
           <span class="status-dot"></span>
+
           <div>
             <strong>Sistema activo</strong>
             <small>Versión 0.2</small>
           </div>
+
         </div>
+
       </div>
+
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="main-content">
+
+      <!-- TOPBAR -->
       <header class="topbar">
+
         <div>
-          <p class="eyebrow">Gestión de Competencias</p>
-          <h2 id="pageTitle">Dashboard</h2>
+
+          <p class="eyebrow">
+            Gestión de Competencias
+          </p>
+
+          <h2 id="pageTitle">
+            Dashboard
+          </h2>
+
         </div>
 
         <div class="topbar-actions">
-          <div class="search-wrapper">
+
+          <div class="search-container">
+
             <label class="search-box">
+
               <span>⌕</span>
-              <input id="globalSearch" type="search" placeholder="Buscar operador o máquina..." autocomplete="off" />
+
+              <input
+                id="globalSearch"
+                type="search"
+                placeholder="Buscar operador o máquina..."
+                autocomplete="off"
+              />
+
             </label>
-            <div id="searchResults" class="search-results" hidden></div>
+
+            <div
+              id="searchResults"
+              class="search-results"
+              aria-live="polite"
+            ></div>
+
           </div>
-          <button class="primary-btn" id="addOperatorBtn">+ Nuevo operador</button>
+
         </div>
+
       </header>
 
-      <section id="dashboard" class="view active">
+      <!-- DASHBOARD -->
+      <section
+        id="dashboard"
+        class="view active"
+      >
+
+        <!-- HERO -->
         <div class="hero-card">
+
           <div>
-            <span class="hero-label">CNC SKILLS MANAGEMENT</span>
-            <h3>Construye un equipo flexible, competente y confiable.</h3>
+
+            <span class="hero-label">
+              CNC SKILLS MANAGEMENT
+            </span>
+
+            <h3>
+              Construye un equipo flexible, competente y confiable.
+            </h3>
+
           </div>
+
           <div class="hero-score">
-            <span>Competencia global</span>
-            <strong id="globalScore">74%</strong>
-            <small>Meta sugerida: 85%</small>
+
+            <span>
+              Competencia global
+            </span>
+
+            <strong id="globalScore">
+              74%
+            </strong>
+
+            <small>
+              Meta sugerida: 85%
+            </small>
+
           </div>
+
         </div>
 
-        <div class="stats-grid level-stats-grid">
-          <article class="stat-card operator-stat">
-            <span class="stat-label">Operadores</span>
-            <strong id="operatorCount">6</strong>
-            <small>Personal activo registrado</small>
+        <!-- MAIN KPIS -->
+        <div class="stats-grid skills-stats-grid">
+
+          <article class="stat-card operators-stat">
+
+            <span class="stat-label">
+              Operadores
+            </span>
+
+            <strong id="operatorCount">
+              6
+            </strong>
+
+            <small>
+              Personal activo registrado
+            </small>
+
           </article>
+
           <article class="stat-card level-stat level-stat-0">
-            <span class="stat-label">Nivel 0</span>
-            <strong id="level0Count">0</strong>
-            <small>Asignaciones no entrenadas</small>
+
+            <span class="stat-label">
+              Nivel 0
+            </span>
+
+            <strong id="level0Count">
+              0
+            </strong>
+
+            <small>
+              Sin entrenamiento
+            </small>
+
           </article>
+
           <article class="stat-card level-stat level-stat-1">
-            <span class="stat-label">Nivel 1</span>
-            <strong id="level1Count">0</strong>
-            <small>Asignaciones en entrenamiento</small>
+
+            <span class="stat-label">
+              Nivel 1
+            </span>
+
+            <strong id="level1Count">
+              0
+            </strong>
+
+            <small>
+              En entrenamiento
+            </small>
+
           </article>
+
           <article class="stat-card level-stat level-stat-2">
-            <span class="stat-label">Nivel 2</span>
-            <strong id="level2Count">0</strong>
-            <small>Operación con supervisión</small>
+
+            <span class="stat-label">
+              Nivel 2
+            </span>
+
+            <strong id="level2Count">
+              0
+            </strong>
+
+            <small>
+              Opera con supervisión
+            </small>
+
           </article>
+
           <article class="stat-card level-stat level-stat-3">
-            <span class="stat-label">Nivel 3</span>
-            <strong id="level3Count">0</strong>
-            <small>Asignaciones certificadas</small>
+
+            <span class="stat-label">
+              Nivel 3
+            </span>
+
+            <strong id="level3Count">
+              0
+            </strong>
+
+            <small>
+              Competencias certificadas
+            </small>
+
           </article>
+
           <article class="stat-card level-stat level-stat-4">
-            <span class="stat-label">Nivel 4</span>
-            <strong id="level4Count">0</strong>
-            <small>Expertos o entrenadores</small>
+
+            <span class="stat-label">
+              Nivel 4
+            </span>
+
+            <strong id="level4Count">
+              0
+            </strong>
+
+            <small>
+              Expertos o entrenadores
+            </small>
+
           </article>
+
           <article class="stat-card warning">
-            <span class="stat-label">Brechas críticas</span>
-            <strong id="criticalGapCount">0</strong>
-            <small>Máquinas con nivel promedio menor a 2</small>
+
+            <span class="stat-label">
+              Brechas críticas
+            </span>
+
+            <strong id="criticalGapCount">
+              5
+            </strong>
+
+            <small>
+              Requieren plan de acción
+            </small>
+
           </article>
+
         </div>
 
-        <article class="panel distribution-panel">
+        <!-- LEVEL DISTRIBUTION -->
+        <article class="panel level-distribution-panel">
+
           <div class="panel-header">
+
             <div>
-              <span class="section-kicker">Distribución real</span>
-              <h3>Asignaciones operador–máquina por nivel</h3>
+
+              <span class="section-kicker">
+                Distribución de habilidades
+              </span>
+
+              <h3>
+                Competencias por nivel
+              </h3>
+
             </div>
-            <span id="assignmentTotal" class="total-badge">0 asignaciones</span>
+
+            <span class="panel-note">
+              Asignaciones operador–máquina
+            </span>
+
           </div>
-          <div id="levelDistribution" class="level-distribution"></div>
-          <p class="distribution-note">Cada registro representa el nivel de un operador en una máquina específica; una misma persona puede aparecer en distintos niveles.</p>
+
+          <div
+            id="levelDistribution"
+            class="level-distribution"
+          ></div>
+
         </article>
 
+        <!-- DASHBOARD PANELS -->
         <div class="dashboard-grid">
+
+          <!-- COVERAGE -->
           <article class="panel">
+
             <div class="panel-header">
+
               <div>
-                <span class="section-kicker">Cobertura</span>
-                <h3>Cobertura por familia de máquina</h3>
+
+                <span class="section-kicker">
+                  Cobertura
+                </span>
+
+                <h3>
+                  Cobertura por familia de máquina
+                </h3>
+
               </div>
-              <button class="text-btn" data-go="machines">Ver máquinas</button>
+
+              <button
+                class="text-btn"
+                data-go="machines"
+                type="button"
+              >
+                Ver máquinas
+              </button>
+
             </div>
-            <div id="familyCoverage" class="coverage-list"></div>
+
+            <div
+              id="familyCoverage"
+              class="coverage-list"
+            ></div>
+
           </article>
 
+          <!-- PRIORITIES -->
           <article class="panel">
+
             <div class="panel-header">
+
               <div>
-                <span class="section-kicker">Prioridades</span>
-                <h3>Brechas principales</h3>
+
+                <span class="section-kicker">
+                  Prioridades
+                </span>
+
+                <h3>
+                  Brechas principales
+                </h3>
+
               </div>
-              <button class="text-btn" data-go="training">Ver plan</button>
+
+              <button
+                class="text-btn"
+                data-go="training"
+                type="button"
+              >
+                Ver plan
+              </button>
+
             </div>
-            <div id="priorityList" class="priority-list"></div>
+
+            <div
+              id="priorityList"
+              class="priority-list"
+            ></div>
+
           </article>
+
         </div>
 
+        <!-- OPERATOR SUMMARY -->
         <article class="panel">
+
           <div class="panel-header">
+
             <div>
-              <span class="section-kicker">Resumen</span>
-              <h3>Competencia por operador</h3>
+
+              <span class="section-kicker">
+                Resumen
+              </span>
+
+              <h3>
+                Competencia por operador
+              </h3>
+
             </div>
-            <button class="text-btn" data-go="matrix">Abrir matriz completa</button>
+
+            <button
+              class="text-btn"
+              data-go="matrix"
+              type="button"
+            >
+              Abrir matriz completa
+            </button>
+
           </div>
-          <div id="operatorSummary" class="operator-summary"></div>
+
+          <div
+            id="operatorSummary"
+            class="operator-summary"
+          ></div>
+
         </article>
+
       </section>
 
-      <section id="matrix" class="view">
+      <!-- SKILLS MATRIX -->
+      <section
+        id="matrix"
+        class="view"
+      >
+
         <div class="toolbar">
+
           <div>
-            <span class="section-kicker">Vista principal</span>
-            <h3>Matriz de habilidades</h3>
+
+            <span class="section-kicker">
+              Vista principal
+            </span>
+
+            <h3>
+              Matriz de habilidades
+            </h3>
+
           </div>
+
           <div class="filter-group">
+
             <select id="matrixFamilyFilter">
-              <option value="all">Todas las familias</option>
-              <option value="CMV">CMV</option>
-              <option value="TCN">TCN</option>
-              <option value="CMH">CMH</option>
-              <option value="RV">RV</option>
+
+              <option value="all">
+                Todas las familias
+              </option>
+
+              <option value="CMV">
+                CMV
+              </option>
+
+              <option value="TCN">
+                TCN
+              </option>
+
+              <option value="CMH">
+                CMH
+              </option>
+
+              <option value="RV">
+                RV
+              </option>
+
             </select>
+
           </div>
+
         </div>
 
         <div class="legend">
-          <span><i class="level-dot level-0"></i>0 No entrenado</span>
-          <span><i class="level-dot level-1"></i>1 En entrenamiento</span>
-          <span><i class="level-dot level-2"></i>2 Con supervisión</span>
-          <span><i class="level-dot level-3"></i>3 Certificado</span>
-          <span><i class="level-dot level-4"></i>4 Experto / Entrenador</span>
+
+          <span>
+            <i class="level-dot level-0"></i>
+            0 No entrenado
+          </span>
+
+          <span>
+            <i class="level-dot level-1"></i>
+            1 En entrenamiento
+          </span>
+
+          <span>
+            <i class="level-dot level-2"></i>
+            2 Con supervisión
+          </span>
+
+          <span>
+            <i class="level-dot level-3"></i>
+            3 Certificado
+          </span>
+
+          <span>
+            <i class="level-dot level-4"></i>
+            4 Experto / Entrenador
+          </span>
+
         </div>
 
         <div class="table-wrap">
+
           <table class="skill-table">
+
             <thead id="matrixHead"></thead>
+
             <tbody id="matrixBody"></tbody>
+
           </table>
+
         </div>
+
       </section>
 
-      <section id="operators" class="view">
+      <!-- OPERATORS -->
+      <section
+        id="operators"
+        class="view"
+      >
+
         <div class="toolbar">
+
           <div>
-            <span class="section-kicker">Personal</span>
-            <h3>Operadores registrados</h3>
+
+            <span class="section-kicker">
+              Personal
+            </span>
+
+            <h3>
+              Operadores registrados
+            </h3>
+
           </div>
-          <button class="primary-btn" id="addOperatorBtn2">+ Nuevo operador</button>
+
+          <button
+            class="primary-btn"
+            id="addOperatorBtn2"
+            type="button"
+          >
+            + Nuevo operador
+          </button>
+
         </div>
-        <div id="operatorCards" class="cards-grid"></div>
+
+        <div
+          id="operatorCards"
+          class="cards-grid"
+        ></div>
+
       </section>
 
-      <section id="machines" class="view">
-        <div class="toolbar">
-          <div>
-            <span class="section-kicker">Inventario productivo</span>
-            <h3>Máquinas activas</h3>
+      <!-- OPERATOR PROFILE -->
+      <section
+        id="operatorProfile"
+        class="view"
+      >
+
+        <div class="profile-toolbar">
+
+          <button
+            id="backToOperatorsBtn"
+            class="secondary-btn back-btn"
+            type="button"
+          >
+            ← Regresar
+          </button>
+
+          <div class="profile-toolbar-actions">
+
+            <button
+              id="editOperatorBtn"
+              class="secondary-btn"
+              type="button"
+            >
+              Editar operador
+            </button>
+
           </div>
+
+        </div>
+
+        <article class="operator-profile-header">
+
+          <div
+            id="profileInitials"
+            class="profile-avatar"
+          >
+            OP
+          </div>
+
+          <div class="profile-main-info">
+
+            <span class="section-kicker">
+              Perfil del operador
+            </span>
+
+            <h3 id="profileName">
+              Nombre del operador
+            </h3>
+
+            <div class="profile-meta">
+
+              <span id="profileEmployeeId">
+                ID: —
+              </span>
+
+              <span id="profileRole">
+                Puesto: —
+              </span>
+
+              <span id="profileShift">
+                Turno: —
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="profile-score">
+
+            <span>
+              Competencia general
+            </span>
+
+            <strong id="profileScore">
+              0%
+            </strong>
+
+          </div>
+
+        </article>
+
+        <div class="profile-grid">
+
+          <!-- PROFILE LEVEL DISTRIBUTION -->
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <span class="section-kicker">
+                  Distribución
+                </span>
+
+                <h3>
+                  Resumen por nivel
+                </h3>
+
+              </div>
+
+            </div>
+
+            <div
+              id="profileLevelSummary"
+              class="profile-level-summary"
+            ></div>
+
+          </article>
+
+          <!-- PROFILE MACHINE SKILLS -->
+          <article class="panel profile-machines-panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <span class="section-kicker">
+                  Competencias
+                </span>
+
+                <h3>
+                  Nivel por máquina
+                </h3>
+
+              </div>
+
+            </div>
+
+            <div
+              id="profileMachineSkills"
+              class="profile-machine-skills"
+            ></div>
+
+          </article>
+
+        </div>
+
+        <article class="panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <span class="section-kicker">
+                Desarrollo
+              </span>
+
+              <h3>
+                Capacitaciones y brechas
+              </h3>
+
+            </div>
+
+          </div>
+
+          <div
+            id="profileTraining"
+            class="profile-training"
+          ></div>
+
+        </article>
+
+      </section>
+
+      <!-- MACHINES -->
+      <section
+        id="machines"
+        class="view"
+      >
+
+        <div class="toolbar">
+
+          <div>
+
+            <span class="section-kicker">
+              Inventario productivo
+            </span>
+
+            <h3>
+              Máquinas activas
+            </h3>
+
+          </div>
+
           <select id="machineFamilyFilter">
-            <option value="all">Todas las familias</option>
-            <option value="CMV">CMV</option>
-            <option value="TCN">TCN</option>
-            <option value="CMH">CMH</option>
-            <option value="RV">RV</option>
+
+            <option value="all">
+              Todas las familias
+            </option>
+
+            <option value="CMV">
+              CMV
+            </option>
+
+            <option value="TCN">
+              TCN
+            </option>
+
+            <option value="CMH">
+              CMH
+            </option>
+
+            <option value="RV">
+              RV
+            </option>
+
           </select>
+
         </div>
-        <div id="machineCards" class="cards-grid machine-grid"></div>
+
+        <div
+          id="machineCards"
+          class="cards-grid machine-grid"
+        ></div>
+
       </section>
 
-      <section id="training" class="view">
+      <!-- TRAINING -->
+      <section
+        id="training"
+        class="view"
+      >
+
         <div class="toolbar">
+
           <div>
-            <span class="section-kicker">Desarrollo</span>
-            <h3>Plan de capacitación</h3>
+
+            <span class="section-kicker">
+              Desarrollo
+            </span>
+
+            <h3>
+              Plan de capacitación
+            </h3>
+
           </div>
+
         </div>
-        <div id="trainingTable" class="training-list"></div>
+
+        <div
+          id="trainingTable"
+          class="training-list"
+        ></div>
+
       </section>
 
-      <section id="operatorProfile" class="view">
-        <button class="back-btn" id="backToOperators">← Volver a operadores</button>
-        <div id="operatorProfileContent"></div>
-      </section>
     </main>
+
   </div>
 
+  <!-- COMPATIBILITY DATA -->
+  <div
+    class="legacy-data"
+    hidden
+    aria-hidden="true"
+  >
+    <span id="machineCount">14</span>
+    <span id="certifiedCount">0</span>
+  </div>
+
+  <!-- NEW OPERATOR DIALOG -->
   <dialog id="operatorDialog">
-    <form method="dialog" id="operatorForm">
+
+    <form
+      method="dialog"
+      id="operatorForm"
+    >
+
       <div class="dialog-header">
+
         <div>
-          <span class="section-kicker">Alta de personal</span>
-          <h3>Nuevo operador</h3>
+
+          <span class="section-kicker">
+            Alta de personal
+          </span>
+
+          <h3>
+            Nuevo operador
+          </h3>
+
         </div>
-        <button class="icon-btn" value="cancel" aria-label="Cerrar">×</button>
+
+        <button
+          class="icon-btn"
+          value="cancel"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
       </div>
 
       <div class="form-grid">
+
         <label>
+
           Nombre completo
-          <input id="operatorName" required placeholder="Ej. Juan Pérez" />
+
+          <input
+            id="operatorName"
+            required
+            placeholder="Ej. Juan Pérez"
+          />
+
         </label>
+
         <label>
+
           Número de empleado
-          <input id="operatorId" required placeholder="Ej. OP-007" />
+
+          <input
+            id="operatorId"
+            required
+            placeholder="Ej. OP-007"
+          />
+
         </label>
+
         <label>
+
           Puesto
+
           <select id="operatorRole">
-            <option>Operador CNC</option>
-            <option>Setup Technician</option>
-            <option>Líder de producción</option>
-            <option>Entrenador</option>
+
+            <option>
+              Operador CNC
+            </option>
+
+            <option>
+              Setup Technician
+            </option>
+
+            <option>
+              Líder de producción
+            </option>
+
+            <option>
+              Entrenador
+            </option>
+
           </select>
+
         </label>
+
         <label>
+
           Turno
+
           <select id="operatorShift">
-            <option>Turno A</option>
-            <option>Turno B</option>
-            <option>Turno C</option>
+
+            <option>
+              Turno A
+            </option>
+
+            <option>
+              Turno B
+            </option>
+
+            <option>
+              Turno C
+            </option>
+
           </select>
+
         </label>
+
       </div>
 
       <div class="dialog-actions">
-        <button class="secondary-btn" value="cancel">Cancelar</button>
-        <button class="primary-btn" id="saveOperatorBtn" value="default">Guardar operador</button>
+
+        <button
+          class="secondary-btn"
+          value="cancel"
+        >
+          Cancelar
+        </button>
+
+        <button
+          class="primary-btn"
+          id="saveOperatorBtn"
+          value="default"
+        >
+          Guardar operador
+        </button>
+
       </div>
+
     </form>
+
   </dialog>
 
   <script src="app.js"></script>
