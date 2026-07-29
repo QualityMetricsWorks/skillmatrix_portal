@@ -18,18 +18,18 @@
   <link
     rel="preconnect"
     href="https://fonts.googleapis.com"
-  >
+  />
 
   <link
     rel="preconnect"
     href="https://fonts.gstatic.com"
     crossorigin
-  >
+  />
 
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
-  >
+  />
 
   <link
     rel="stylesheet"
@@ -38,9 +38,13 @@
 </head>
 
 <body>
+
   <div class="app-shell">
 
-    <!-- SIDEBAR -->
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
     <aside class="sidebar">
 
       <div class="brand">
@@ -113,7 +117,7 @@
 
           <div>
             <strong>Sistema activo</strong>
-            <small>Versión 0.2</small>
+            <small>Versión 0.3</small>
           </div>
 
         </div>
@@ -122,10 +126,14 @@
 
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
     <main class="main-content">
 
       <!-- TOPBAR -->
+
       <header class="topbar">
 
         <div>
@@ -161,6 +169,7 @@
               id="searchResults"
               class="search-results"
               aria-live="polite"
+              hidden
             ></div>
 
           </div>
@@ -169,13 +178,15 @@
 
       </header>
 
-      <!-- DASHBOARD -->
+      <!-- =====================================================
+           DASHBOARD
+      ====================================================== -->
+
       <section
         id="dashboard"
         class="view active"
       >
 
-        <!-- HERO -->
         <div class="hero-card">
 
           <div>
@@ -197,7 +208,7 @@
             </span>
 
             <strong id="globalScore">
-              74%
+              0%
             </strong>
 
             <small>
@@ -208,7 +219,6 @@
 
         </div>
 
-        <!-- MAIN KPIS -->
         <div class="stats-grid skills-stats-grid">
 
           <article class="stat-card operators-stat">
@@ -218,7 +228,7 @@
             </span>
 
             <strong id="operatorCount">
-              6
+              0
             </strong>
 
             <small>
@@ -314,7 +324,7 @@
             </span>
 
             <strong id="criticalGapCount">
-              5
+              0
             </strong>
 
             <small>
@@ -325,7 +335,6 @@
 
         </div>
 
-        <!-- LEVEL DISTRIBUTION -->
         <article class="panel level-distribution-panel">
 
           <div class="panel-header">
@@ -355,10 +364,8 @@
 
         </article>
 
-        <!-- DASHBOARD PANELS -->
         <div class="dashboard-grid">
 
-          <!-- COVERAGE -->
           <article class="panel">
 
             <div class="panel-header">
@@ -392,7 +399,6 @@
 
           </article>
 
-          <!-- PRIORITIES -->
           <article class="panel">
 
             <div class="panel-header">
@@ -428,7 +434,6 @@
 
         </div>
 
-        <!-- OPERATOR SUMMARY -->
         <article class="panel">
 
           <div class="panel-header">
@@ -464,7 +469,10 @@
 
       </section>
 
-      <!-- SKILLS MATRIX -->
+      <!-- =====================================================
+           MATRIX
+      ====================================================== -->
+
       <section
         id="matrix"
         class="view"
@@ -486,7 +494,10 @@
 
           <div class="filter-group">
 
-            <select id="matrixFamilyFilter">
+            <select
+              id="matrixFamilyFilter"
+              aria-label="Filtrar matriz por familia"
+            >
 
               <option value="all">
                 Todas las familias
@@ -557,7 +568,10 @@
 
       </section>
 
-      <!-- OPERATORS -->
+      <!-- =====================================================
+           OPERATORS
+      ====================================================== -->
+
       <section
         id="operators"
         class="view"
@@ -594,7 +608,10 @@
 
       </section>
 
-      <!-- OPERATOR PROFILE -->
+      <!-- =====================================================
+           OPERATOR PROFILE
+      ====================================================== -->
+
       <section
         id="operatorProfile"
         class="view"
@@ -618,6 +635,14 @@
               type="button"
             >
               Editar operador
+            </button>
+
+            <button
+              id="deleteOperatorBtn"
+              class="danger-btn"
+              type="button"
+            >
+              Eliminar operador
             </button>
 
           </div>
@@ -677,7 +702,78 @@
 
         <div class="profile-grid">
 
-          <!-- PROFILE LEVEL DISTRIBUTION -->
+          <article class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <span class="section-kicker">
+                  Información
+                </span>
+
+                <h3>
+                  Datos del operador
+                </h3>
+
+              </div>
+
+            </div>
+
+            <div class="profile-info-list">
+
+              <div class="profile-info-row">
+
+                <span>
+                  Área
+                </span>
+
+                <strong id="profileArea">
+                  —
+                </strong>
+
+              </div>
+
+              <div class="profile-info-row">
+
+                <span>
+                  Supervisor
+                </span>
+
+                <strong id="profileSupervisor">
+                  —
+                </strong>
+
+              </div>
+
+              <div class="profile-info-row">
+
+                <span>
+                  Fecha de ingreso
+                </span>
+
+                <strong id="profileEntryDate">
+                  —
+                </strong>
+
+              </div>
+
+              <div class="profile-info-row">
+
+                <span>
+                  Estatus
+                </span>
+
+                <strong id="profileStatus">
+                  —
+                </strong>
+
+              </div>
+
+            </div>
+
+          </article>
+
           <article class="panel">
 
             <div class="panel-header">
@@ -703,33 +799,32 @@
 
           </article>
 
-          <!-- PROFILE MACHINE SKILLS -->
-          <article class="panel profile-machines-panel">
+        </div>
 
-            <div class="panel-header">
+        <article class="panel profile-machines-panel">
 
-              <div>
+          <div class="panel-header">
 
-                <span class="section-kicker">
-                  Competencias
-                </span>
+            <div>
 
-                <h3>
-                  Nivel por máquina
-                </h3>
+              <span class="section-kicker">
+                Competencias
+              </span>
 
-              </div>
+              <h3>
+                Nivel por máquina
+              </h3>
 
             </div>
 
-            <div
-              id="profileMachineSkills"
-              class="profile-machine-skills"
-            ></div>
+          </div>
 
-          </article>
+          <div
+            id="profileMachineSkills"
+            class="profile-machine-skills"
+          ></div>
 
-        </div>
+        </article>
 
         <article class="panel">
 
@@ -758,7 +853,10 @@
 
       </section>
 
-      <!-- MACHINES -->
+      <!-- =====================================================
+           MACHINES
+      ====================================================== -->
+
       <section
         id="machines"
         class="view"
@@ -778,7 +876,10 @@
 
           </div>
 
-          <select id="machineFamilyFilter">
+          <select
+            id="machineFamilyFilter"
+            aria-label="Filtrar máquinas por familia"
+          >
 
             <option value="all">
               Todas las familias
@@ -811,7 +912,10 @@
 
       </section>
 
-      <!-- TRAINING -->
+      <!-- =====================================================
+           TRAINING
+      ====================================================== -->
+
       <section
         id="training"
         class="view"
@@ -844,7 +948,10 @@
 
   </div>
 
-  <!-- COMPATIBILITY DATA -->
+  <!-- =====================================================
+       COMPATIBILITY DATA
+  ====================================================== -->
+
   <div
     class="legacy-data"
     hidden
@@ -852,9 +959,13 @@
   >
     <span id="machineCount">14</span>
     <span id="certifiedCount">0</span>
+    <span id="assignmentTotal">0 asignaciones</span>
   </div>
 
-  <!-- NEW OPERATOR DIALOG -->
+  <!-- =====================================================
+       OPERATOR DIALOG
+  ====================================================== -->
+
   <dialog id="operatorDialog">
 
     <form
@@ -862,15 +973,24 @@
       id="operatorForm"
     >
 
+      <input
+        type="hidden"
+        id="editingOperatorId"
+        value=""
+      />
+
       <div class="dialog-header">
 
         <div>
 
-          <span class="section-kicker">
+          <span
+            class="section-kicker"
+            id="operatorDialogKicker"
+          >
             Alta de personal
           </span>
 
-          <h3>
+          <h3 id="operatorDialogTitle">
             Nuevo operador
           </h3>
 
@@ -878,6 +998,7 @@
 
         <button
           class="icon-btn"
+          type="submit"
           value="cancel"
           aria-label="Cerrar"
         >
@@ -894,8 +1015,11 @@
 
           <input
             id="operatorName"
+            type="text"
             required
+            maxlength="100"
             placeholder="Ej. Juan Pérez"
+            autocomplete="name"
           />
 
         </label>
@@ -906,8 +1030,11 @@
 
           <input
             id="operatorId"
+            type="text"
             required
+            maxlength="30"
             placeholder="Ej. OP-007"
+            autocomplete="off"
           />
 
         </label>
@@ -916,21 +1043,24 @@
 
           Puesto
 
-          <select id="operatorRole">
+          <select
+            id="operatorRole"
+            required
+          >
 
-            <option>
+            <option value="Operador CNC">
               Operador CNC
             </option>
 
-            <option>
+            <option value="Setup Technician">
               Setup Technician
             </option>
 
-            <option>
+            <option value="Líder de producción">
               Líder de producción
             </option>
 
-            <option>
+            <option value="Entrenador">
               Entrenador
             </option>
 
@@ -942,18 +1072,91 @@
 
           Turno
 
-          <select id="operatorShift">
+          <select
+            id="operatorShift"
+            required
+          >
 
-            <option>
+            <option value="Turno A">
               Turno A
             </option>
 
-            <option>
+            <option value="Turno B">
               Turno B
             </option>
 
-            <option>
+            <option value="Turno C">
               Turno C
+            </option>
+
+          </select>
+
+        </label>
+
+        <label>
+
+          Área
+
+          <input
+            id="operatorArea"
+            type="text"
+            required
+            maxlength="80"
+            value="Maquinado CNC"
+            placeholder="Ej. Maquinado CNC"
+          />
+
+        </label>
+
+        <label>
+
+          Supervisor
+
+          <input
+            id="operatorSupervisor"
+            type="text"
+            required
+            maxlength="100"
+            placeholder="Ej. Supervisor A"
+          />
+
+        </label>
+
+        <label>
+
+          Fecha de ingreso
+
+          <input
+            id="operatorEntryDate"
+            type="date"
+            required
+          />
+
+        </label>
+
+        <label>
+
+          Estatus
+
+          <select
+            id="operatorStatus"
+            required
+          >
+
+            <option value="Activo">
+              Activo
+            </option>
+
+            <option value="Inactivo">
+              Inactivo
+            </option>
+
+            <option value="En capacitación">
+              En capacitación
+            </option>
+
+            <option value="Ausencia temporal">
+              Ausencia temporal
             </option>
 
           </select>
@@ -966,6 +1169,7 @@
 
         <button
           class="secondary-btn"
+          type="submit"
           value="cancel"
         >
           Cancelar
@@ -974,6 +1178,7 @@
         <button
           class="primary-btn"
           id="saveOperatorBtn"
+          type="submit"
           value="default"
         >
           Guardar operador
@@ -986,5 +1191,6 @@
   </dialog>
 
   <script src="app.js"></script>
+
 </body>
 </html>
