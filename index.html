@@ -2,7 +2,12 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <meta
     name="description"
     content="Portal de matriz de habilidades para operadores CNC"
@@ -10,15 +15,26 @@
 
   <title>CNC Skills Portal</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
 
-  <link rel="stylesheet" href="styles.css" />
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  />
 </head>
 
 <body>
@@ -28,39 +44,63 @@
     <aside class="sidebar">
 
       <div class="brand">
-        <div class="brand-mark">SM</div>
+
+        <div class="brand-mark">
+          SM
+        </div>
 
         <div>
           <h1>Skills Matrix</h1>
           <span>CNC Operations</span>
         </div>
+
       </div>
 
       <nav class="nav">
 
-        <button class="nav-item active" data-view="dashboard">
+        <button
+          class="nav-item active"
+          data-view="dashboard"
+          type="button"
+        >
           <span class="nav-icon">◫</span>
-          Dashboard
+          <span class="nav-text">Dashboard</span>
         </button>
 
-        <button class="nav-item" data-view="matrix">
+        <button
+          class="nav-item"
+          data-view="matrix"
+          type="button"
+        >
           <span class="nav-icon">▦</span>
-          Matriz
+          <span class="nav-text">Matriz</span>
         </button>
 
-        <button class="nav-item" data-view="operators">
+        <button
+          class="nav-item"
+          data-view="operators"
+          type="button"
+        >
           <span class="nav-icon">●</span>
-          Operadores
+          <span class="nav-text">Operadores</span>
         </button>
 
-        <button class="nav-item" data-view="machines">
+        <button
+          class="nav-item"
+          data-view="machines"
+          type="button"
+        >
           <span class="nav-icon">⚙</span>
-          Máquinas
+          <span class="nav-text">Máquinas</span>
         </button>
 
-        <button class="nav-item" data-view="training">
+        <button
+          class="nav-item"
+          data-view="training"
+          type="button"
+        >
           <span class="nav-icon">◆</span>
-          Capacitación
+          <span class="nav-text">Capacitación</span>
         </button>
 
       </nav>
@@ -68,15 +108,18 @@
       <div class="sidebar-footer">
 
         <div class="system-status">
+
           <span class="status-dot"></span>
 
           <div>
             <strong>Sistema activo</strong>
             <small>Versión 0.2</small>
           </div>
+
         </div>
 
       </div>
+
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -86,8 +129,15 @@
       <header class="topbar">
 
         <div>
-          <p class="eyebrow">Gestión de Competencias</p>
-          <h2 id="pageTitle">Dashboard</h2>
+
+          <p class="eyebrow">
+            Gestión de Competencias
+          </p>
+
+          <h2 id="pageTitle">
+            Dashboard
+          </h2>
+
         </div>
 
         <div class="topbar-actions">
@@ -95,6 +145,7 @@
           <div class="search-container">
 
             <label class="search-box">
+
               <span>⌕</span>
 
               <input
@@ -103,6 +154,7 @@
                 placeholder="Buscar operador o máquina..."
                 autocomplete="off"
               />
+
             </label>
 
             <div
@@ -113,20 +165,21 @@
 
           </div>
 
-          <button class="primary-btn" id="addOperatorBtn">
-            + Nuevo operador
-          </button>
-
         </div>
+
       </header>
 
       <!-- DASHBOARD -->
-      <section id="dashboard" class="view active">
+      <section
+        id="dashboard"
+        class="view active"
+      >
 
         <!-- HERO -->
         <div class="hero-card">
 
           <div>
+
             <span class="hero-label">
               CNC SKILLS MANAGEMENT
             </span>
@@ -134,10 +187,14 @@
             <h3>
               Construye un equipo flexible, competente y confiable.
             </h3>
+
           </div>
 
           <div class="hero-score">
-            <span>Competencia global</span>
+
+            <span>
+              Competencia global
+            </span>
 
             <strong id="globalScore">
               74%
@@ -146,6 +203,7 @@
             <small>
               Meta sugerida: 85%
             </small>
+
           </div>
 
         </div>
@@ -154,6 +212,7 @@
         <div class="stats-grid skills-stats-grid">
 
           <article class="stat-card operators-stat">
+
             <span class="stat-label">
               Operadores
             </span>
@@ -165,9 +224,11 @@
             <small>
               Personal activo registrado
             </small>
+
           </article>
 
           <article class="stat-card level-stat level-stat-0">
+
             <span class="stat-label">
               Nivel 0
             </span>
@@ -179,9 +240,11 @@
             <small>
               Sin entrenamiento
             </small>
+
           </article>
 
           <article class="stat-card level-stat level-stat-1">
+
             <span class="stat-label">
               Nivel 1
             </span>
@@ -193,9 +256,11 @@
             <small>
               En entrenamiento
             </small>
+
           </article>
 
           <article class="stat-card level-stat level-stat-2">
+
             <span class="stat-label">
               Nivel 2
             </span>
@@ -207,9 +272,11 @@
             <small>
               Opera con supervisión
             </small>
+
           </article>
 
           <article class="stat-card level-stat level-stat-3">
+
             <span class="stat-label">
               Nivel 3
             </span>
@@ -221,9 +288,11 @@
             <small>
               Competencias certificadas
             </small>
+
           </article>
 
           <article class="stat-card level-stat level-stat-4">
+
             <span class="stat-label">
               Nivel 4
             </span>
@@ -235,9 +304,11 @@
             <small>
               Expertos o entrenadores
             </small>
+
           </article>
 
           <article class="stat-card warning">
+
             <span class="stat-label">
               Brechas críticas
             </span>
@@ -249,6 +320,7 @@
             <small>
               Requieren plan de acción
             </small>
+
           </article>
 
         </div>
@@ -259,6 +331,7 @@
           <div class="panel-header">
 
             <div>
+
               <span class="section-kicker">
                 Distribución de habilidades
               </span>
@@ -266,6 +339,7 @@
               <h3>
                 Competencias por nivel
               </h3>
+
             </div>
 
             <span class="panel-note">
@@ -290,6 +364,7 @@
             <div class="panel-header">
 
               <div>
+
                 <span class="section-kicker">
                   Cobertura
                 </span>
@@ -297,11 +372,13 @@
                 <h3>
                   Cobertura por familia de máquina
                 </h3>
+
               </div>
 
               <button
                 class="text-btn"
                 data-go="machines"
+                type="button"
               >
                 Ver máquinas
               </button>
@@ -321,6 +398,7 @@
             <div class="panel-header">
 
               <div>
+
                 <span class="section-kicker">
                   Prioridades
                 </span>
@@ -328,11 +406,13 @@
                 <h3>
                   Brechas principales
                 </h3>
+
               </div>
 
               <button
                 class="text-btn"
                 data-go="training"
+                type="button"
               >
                 Ver plan
               </button>
@@ -354,6 +434,7 @@
           <div class="panel-header">
 
             <div>
+
               <span class="section-kicker">
                 Resumen
               </span>
@@ -361,11 +442,13 @@
               <h3>
                 Competencia por operador
               </h3>
+
             </div>
 
             <button
               class="text-btn"
               data-go="matrix"
+              type="button"
             >
               Abrir matriz completa
             </button>
@@ -382,11 +465,15 @@
       </section>
 
       <!-- SKILLS MATRIX -->
-      <section id="matrix" class="view">
+      <section
+        id="matrix"
+        class="view"
+      >
 
         <div class="toolbar">
 
           <div>
+
             <span class="section-kicker">
               Vista principal
             </span>
@@ -394,11 +481,13 @@
             <h3>
               Matriz de habilidades
             </h3>
+
           </div>
 
           <div class="filter-group">
 
             <select id="matrixFamilyFilter">
+
               <option value="all">
                 Todas las familias
               </option>
@@ -418,6 +507,7 @@
               <option value="RV">
                 RV
               </option>
+
             </select>
 
           </div>
@@ -468,11 +558,15 @@
       </section>
 
       <!-- OPERATORS -->
-      <section id="operators" class="view">
+      <section
+        id="operators"
+        class="view"
+      >
 
         <div class="toolbar">
 
           <div>
+
             <span class="section-kicker">
               Personal
             </span>
@@ -480,11 +574,13 @@
             <h3>
               Operadores registrados
             </h3>
+
           </div>
 
           <button
             class="primary-btn"
             id="addOperatorBtn2"
+            type="button"
           >
             + Nuevo operador
           </button>
@@ -499,7 +595,10 @@
       </section>
 
       <!-- OPERATOR PROFILE -->
-      <section id="operatorProfile" class="view">
+      <section
+        id="operatorProfile"
+        class="view"
+      >
 
         <div class="profile-toolbar">
 
@@ -584,6 +683,7 @@
             <div class="panel-header">
 
               <div>
+
                 <span class="section-kicker">
                   Distribución
                 </span>
@@ -591,6 +691,7 @@
                 <h3>
                   Resumen por nivel
                 </h3>
+
               </div>
 
             </div>
@@ -608,6 +709,7 @@
             <div class="panel-header">
 
               <div>
+
                 <span class="section-kicker">
                   Competencias
                 </span>
@@ -615,6 +717,7 @@
                 <h3>
                   Nivel por máquina
                 </h3>
+
               </div>
 
             </div>
@@ -633,6 +736,7 @@
           <div class="panel-header">
 
             <div>
+
               <span class="section-kicker">
                 Desarrollo
               </span>
@@ -640,6 +744,7 @@
               <h3>
                 Capacitaciones y brechas
               </h3>
+
             </div>
 
           </div>
@@ -654,11 +759,15 @@
       </section>
 
       <!-- MACHINES -->
-      <section id="machines" class="view">
+      <section
+        id="machines"
+        class="view"
+      >
 
         <div class="toolbar">
 
           <div>
+
             <span class="section-kicker">
               Inventario productivo
             </span>
@@ -666,6 +775,7 @@
             <h3>
               Máquinas activas
             </h3>
+
           </div>
 
           <select id="machineFamilyFilter">
@@ -702,11 +812,15 @@
       </section>
 
       <!-- TRAINING -->
-      <section id="training" class="view">
+      <section
+        id="training"
+        class="view"
+      >
 
         <div class="toolbar">
 
           <div>
+
             <span class="section-kicker">
               Desarrollo
             </span>
@@ -714,6 +828,7 @@
             <h3>
               Plan de capacitación
             </h3>
+
           </div>
 
         </div>
@@ -726,10 +841,15 @@
       </section>
 
     </main>
+
   </div>
 
   <!-- COMPATIBILITY DATA -->
-  <div class="legacy-data" hidden aria-hidden="true">
+  <div
+    class="legacy-data"
+    hidden
+    aria-hidden="true"
+  >
     <span id="machineCount">14</span>
     <span id="certifiedCount">0</span>
   </div>
@@ -745,6 +865,7 @@
       <div class="dialog-header">
 
         <div>
+
           <span class="section-kicker">
             Alta de personal
           </span>
@@ -752,6 +873,7 @@
           <h3>
             Nuevo operador
           </h3>
+
         </div>
 
         <button
@@ -767,6 +889,7 @@
       <div class="form-grid">
 
         <label>
+
           Nombre completo
 
           <input
@@ -774,9 +897,11 @@
             required
             placeholder="Ej. Juan Pérez"
           />
+
         </label>
 
         <label>
+
           Número de empleado
 
           <input
@@ -784,27 +909,55 @@
             required
             placeholder="Ej. OP-007"
           />
+
         </label>
 
         <label>
+
           Puesto
 
           <select id="operatorRole">
-            <option>Operador CNC</option>
-            <option>Setup Technician</option>
-            <option>Líder de producción</option>
-            <option>Entrenador</option>
+
+            <option>
+              Operador CNC
+            </option>
+
+            <option>
+              Setup Technician
+            </option>
+
+            <option>
+              Líder de producción
+            </option>
+
+            <option>
+              Entrenador
+            </option>
+
           </select>
+
         </label>
 
         <label>
+
           Turno
 
           <select id="operatorShift">
-            <option>Turno A</option>
-            <option>Turno B</option>
-            <option>Turno C</option>
+
+            <option>
+              Turno A
+            </option>
+
+            <option>
+              Turno B
+            </option>
+
+            <option>
+              Turno C
+            </option>
+
           </select>
+
         </label>
 
       </div>
@@ -829,6 +982,7 @@
       </div>
 
     </form>
+
   </dialog>
 
   <script src="app.js"></script>
