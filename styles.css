@@ -1777,3 +1777,303 @@ dialog > form > label {
     align-items: flex-start;
   }
 }
+/* =========================================================
+   CNC SKILLS PORTAL · VERSIÓN 1.1
+   LOGO, DOCUMENTOS Y EVIDENCIAS
+========================================================= */
+
+/* CORPORATE LOGO */
+
+.brand-logo-wrap {
+  width: 62px;
+  height: 48px;
+  flex: 0 0 62px;
+  padding: 5px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.company-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.brand-logo-wrap + div {
+  min-width: 0;
+}
+
+.brand-logo-wrap + div h1,
+.brand-logo-wrap + div span {
+  white-space: nowrap;
+}
+
+/* FILE INPUTS */
+
+input[type="file"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 7px 9px;
+  border: 1px dashed #b7c3d4;
+  border-radius: 9px;
+  background: #f8fafd;
+  color: var(--muted);
+}
+
+input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+/* OPERATOR DOCUMENTS */
+
+.profile-documents {
+  display: grid;
+  gap: 10px;
+}
+
+.operator-documents-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.operator-documents-panel::before {
+  content: "";
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  right: -42px;
+  top: -42px;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  pointer-events: none;
+}
+
+.operator-documents-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* CLICKABLE HISTORY AND DOCUMENT RECORDS */
+
+.clickable-record {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.clickable-record:hover {
+  transform: translateY(-2px);
+  border-color: rgba(20, 57, 128, 0.28);
+  background: #fbfcff;
+  box-shadow: 0 10px 24px rgba(20, 57, 128, 0.1);
+}
+
+.clickable-record:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(20, 57, 128, 0.08);
+}
+
+.clickable-record > div {
+  min-width: 0;
+}
+
+.clickable-record strong {
+  color: var(--primary);
+}
+
+.clickable-record .icon-btn {
+  flex: 0 0 auto;
+}
+
+.profile-history .profile-record-item,
+.profile-documents .profile-record-item {
+  position: relative;
+  padding-left: 18px;
+}
+
+.profile-history .profile-record-item::before,
+.profile-documents .profile-record-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.profile-documents .profile-record-item::before {
+  background: var(--orange);
+}
+
+/* EVALUATION RESULT HELPERS */
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 78px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.result-badge.result-pass {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.result-badge.result-fail {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.result-badge.result-progress {
+  color: #946500;
+  background: var(--yellow-soft);
+}
+
+/* RECORD DETAIL DIALOG */
+
+#recordDetailDialog {
+  width: min(720px, calc(100% - 30px));
+}
+
+.record-detail-content {
+  padding: 0 24px 24px;
+}
+
+.record-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 4px 0 18px;
+}
+
+.record-detail-grid > div {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-alt);
+}
+
+.record-detail-grid span,
+.record-detail-notes > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.record-detail-grid strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--primary);
+  line-height: 1.35;
+}
+
+.record-detail-notes {
+  margin-bottom: 18px;
+  padding: 14px;
+  border-left: 4px solid var(--orange);
+  border-radius: 0 10px 10px 0;
+  background: var(--orange-soft);
+}
+
+.record-detail-notes p {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* V1.1 DIALOG ADJUSTMENTS */
+
+#trainingHistoryDialog,
+#operatorDocumentDialog {
+  width: min(700px, calc(100% - 30px));
+}
+
+#trainingHistoryDialog .form-grid,
+#operatorDocumentDialog .form-grid {
+  align-items: start;
+}
+
+#historyLevel,
+#historyResult {
+  font-weight: 700;
+}
+
+#historyResult option[value="Apto"] {
+  color: var(--green);
+}
+
+#historyResult option[value="No apto"] {
+  color: var(--red);
+}
+
+#historyResult option[value="En proceso"] {
+  color: #946500;
+}
+
+/* RESPONSIVE V1.1 */
+
+@media (max-width: 1120px) {
+  .brand-logo-wrap {
+    width: 52px;
+    height: 44px;
+    flex-basis: 52px;
+  }
+}
+
+@media (max-width: 760px) {
+  .brand-logo-wrap {
+    width: 56px;
+    height: 42px;
+    flex-basis: 56px;
+  }
+
+  .brand-logo-wrap + div {
+    display: none;
+  }
+
+  .record-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .record-detail-content {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .profile-history .profile-record-item,
+  .profile-documents .profile-record-item {
+    align-items: flex-start;
+  }
+}
