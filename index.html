@@ -39,7 +39,13 @@
 
       <div class="brand">
 
-        <div class="brand-mark">SM</div>
+        <div class="brand-mark brand-logo-wrap">
+          <img
+            src="./assets/company-logo.jpeg"
+            alt="Metrics Works Global Manufacturing"
+            class="company-logo"
+          />
+        </div>
 
         <div>
           <h1>Skills Matrix</h1>
@@ -123,7 +129,7 @@
 
           <div>
             <strong>Sistema activo</strong>
-            <small>Versión 1.0</small>
+            <small>Versión 1.1</small>
           </div>
 
         </div>
@@ -743,6 +749,32 @@
           </article>
 
         </div>
+
+        <article class="panel operator-documents-panel">
+
+          <div class="panel-header">
+
+            <div>
+              <span class="section-kicker">Documentación</span>
+              <h3>Documentos del operador</h3>
+            </div>
+
+            <button
+              id="addOperatorDocumentBtn"
+              class="text-btn"
+              type="button"
+            >
+              + Subir documento
+            </button>
+
+          </div>
+
+          <div
+            id="profileDocuments"
+            class="profile-documents"
+          ></div>
+
+        </article>
 
         <article class="panel">
 
@@ -1410,6 +1442,27 @@
         </label>
 
         <label>
+          Nivel evaluado
+          <select id="historyLevel" required>
+            <option value="">Seleccionar nivel</option>
+            <option value="1">Nivel 1</option>
+            <option value="2">Nivel 2</option>
+            <option value="3">Nivel 3</option>
+            <option value="4">Nivel 4</option>
+          </select>
+        </label>
+
+        <label>
+          Resultado
+          <select id="historyResult" required>
+            <option value="">Seleccionar resultado</option>
+            <option value="Apto">Apto</option>
+            <option value="No apto">No apto</option>
+            <option value="En proceso">En proceso</option>
+          </select>
+        </label>
+
+        <label>
           Responsable
           <input
             id="historyResponsible"
@@ -1428,6 +1481,16 @@
           ></textarea>
         </label>
 
+        <label class="form-span-2">
+          Archivo de evidencia
+          <input
+            id="historyFile"
+            type="file"
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png"
+          />
+          <small class="field-help">PDF, Word, Excel o imagen.</small>
+        </label>
+
       </div>
 
       <div class="dialog-actions">
@@ -1444,6 +1507,129 @@
           Guardar registro
         </button>
 
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- OPERATOR DOCUMENT DIALOG -->
+  <dialog id="operatorDocumentDialog">
+
+    <form method="dialog" id="operatorDocumentForm">
+
+      <div class="dialog-header">
+
+        <div>
+          <span class="section-kicker">Documentación</span>
+          <h3>Subir documento del operador</h3>
+        </div>
+
+        <button
+          class="icon-btn"
+          value="cancel"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="form-grid">
+
+        <label>
+          Tipo de documento
+          <select id="operatorDocumentType" required>
+            <option value="Inducción">Inducción</option>
+            <option value="Capacitación">Capacitación</option>
+            <option value="Certificación interna">Certificación interna</option>
+            <option value="Autorización de operación">Autorización de operación</option>
+            <option value="Evaluación">Evaluación</option>
+            <option value="Documento general">Documento general</option>
+          </select>
+        </label>
+
+        <label>
+          Fecha
+          <input id="operatorDocumentDate" type="date" required />
+        </label>
+
+        <label>
+          Nombre o descripción
+          <input
+            id="operatorDocumentName"
+            required
+            placeholder="Ej. Inducción general de planta"
+          />
+        </label>
+
+        <label>
+          Fecha de vencimiento
+          <input id="operatorDocumentExpiration" type="date" />
+        </label>
+
+        <label>
+          Responsable
+          <input
+            id="operatorDocumentResponsible"
+            required
+            placeholder="Nombre del responsable"
+          />
+        </label>
+
+        <label>
+          Archivo
+          <input
+            id="operatorDocumentFile"
+            type="file"
+            required
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png"
+          />
+        </label>
+
+        <label class="form-span-2">
+          Observaciones
+          <textarea
+            id="operatorDocumentNotes"
+            rows="3"
+            placeholder="Información adicional del documento"
+          ></textarea>
+        </label>
+
+      </div>
+
+      <div class="dialog-actions">
+        <button class="secondary-btn" value="cancel">Cancelar</button>
+        <button
+          class="primary-btn"
+          id="saveOperatorDocumentBtn"
+          value="default"
+        >
+          Guardar documento
+        </button>
+      </div>
+
+    </form>
+
+  </dialog>
+
+  <!-- RECORD DETAIL DIALOG -->
+  <dialog id="recordDetailDialog">
+
+    <form method="dialog" id="recordDetailForm">
+
+      <div class="dialog-header">
+        <div>
+          <span class="section-kicker">Trazabilidad</span>
+          <h3 id="recordDetailTitle">Detalle del registro</h3>
+        </div>
+        <button class="icon-btn" value="cancel" aria-label="Cerrar">×</button>
+      </div>
+
+      <div id="recordDetailContent" class="record-detail-content"></div>
+
+      <div class="dialog-actions">
+        <button class="secondary-btn" value="cancel">Cerrar</button>
       </div>
 
     </form>
