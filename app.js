@@ -1,7 +1,7 @@
 "use strict";
 
 /* =========================================================
-   CNC SKILLS PORTAL · VERSIÓN 1.0
+   CNC SKILLS PORTAL · VERSIÓN 1.1
 ========================================================= */
 
 const STORAGE_KEY = "cncSkillsPortalData_v1";
@@ -170,6 +170,120 @@ function getCurrentView() {
   return document.querySelector(".view.active")?.id || "dashboard";
 }
 
+function fileSizeLabel(bytes) {
+  const size = Number(bytes || 0);
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+/* =========================================================
+   ARCHIVOS LOCALES · INDEXEDDB
+========================================================= */
+
+const FILE_DB_NAME = "cncSkillsPortalFiles";
+const FILE_DB_VERSION = 1;
+const FILE_STORE_NAME = "files";
+
+function openFileDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(FILE_DB_NAME, FILE_DB_VERSION);
+
+    request.onupgradeneeded = () => {
+      const database = request.result;
+      if (!database.objectStoreNames.contains(FILE_STORE_NAME)) {
+        database.createObjectStore(FILE_STORE_NAME, { keyPath: "id" });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function saveLocalFile(file, category, operatorId) {
+  if (!file) return null;
+
+  const record = {
+    id: uid("FILE"),
+    category,
+    operatorId,
+    name: file.name,
+    type: file.type || "application/octet-stream",
+    size: file.size,
+    createdAt: nowIso(),
+    blob: file
+  };
+
+  const database = await openFileDatabase();
+
+  await new Promise((resolve, reject) => {
+    const transaction = database.transaction(FILE_STORE_NAME, "readwrite");
+    transaction.objectStore(FILE_STORE_NAME).put(record);
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+
+  database.close();
+
+  return {
+    id: record.id,
+    name: record.name,
+    type: record.type,
+    size: record.size
+  };
+}
+
+async function getLocalFile(fileId) {
+  if (!fileId) return null;
+
+  const database = await openFileDatabase();
+
+  const record = await new Promise((resolve, reject) => {
+    const transaction = database.transaction(FILE_STORE_NAME, "readonly");
+    const request = transaction.objectStore(FILE_STORE_NAME).get(fileId);
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+  });
+
+  database.close();
+  return record;
+}
+
+async function deleteLocalFile(fileId) {
+  if (!fileId) return;
+
+  const database = await openFileDatabase();
+
+  await new Promise((resolve, reject) => {
+    const transaction = database.transaction(FILE_STORE_NAME, "readwrite");
+    transaction.objectStore(FILE_STORE_NAME).delete(fileId);
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+
+  database.close();
+}
+
+async function openStoredFile(fileId) {
+  try {
+    const record = await getLocalFile(fileId);
+
+    if (!record?.blob) {
+      window.alert("El archivo no se encontró en este navegador. Puede pertenecer a otro equipo o haber sido eliminado.");
+      return;
+    }
+
+    const url = URL.createObjectURL(record.blob);
+    window.open(url, "_blank", "noopener");
+
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  } catch (error) {
+    console.error("Error al abrir archivo:", error);
+    window.alert("No fue posible abrir el archivo.");
+  }
+}
+
 /* =========================================================
    ESTADO Y MIGRACIÓN
 ========================================================= */
@@ -206,6 +320,7 @@ function createInitialState() {
       scores,
       certifications: {},
       trainingHistory: [],
+      documents: [],
       developmentPlan: []
     };
   });
@@ -260,6 +375,9 @@ function normalizeStoredState(savedState = {}) {
               : {},
           trainingHistory: Array.isArray(operator.trainingHistory)
             ? operator.trainingHistory
+            : [],
+          documents: Array.isArray(operator.documents)
+            ? operator.documents
             : [],
           developmentPlan: Array.isArray(operator.developmentPlan)
             ? operator.developmentPlan
@@ -1020,6 +1138,7 @@ function renderOperatorProfile(operator) {
 
   renderProfileCertifications(operator);
   renderProfileHistory(operator);
+  renderProfileDocuments(operator);
   renderProfileDevelopmentPlan(operator);
   renderProfileGaps(operator);
 }
@@ -1066,6 +1185,22 @@ function renderProfileCertifications(operator) {
   });
 }
 
+function openRecordDetail(title, html) {
+  const dialog = getElement("recordDetailDialog");
+  const titleElement = getElement("recordDetailTitle");
+  const content = getElement("recordDetailContent");
+
+  if (!dialog || !titleElement || !content) return;
+
+  titleElement.textContent = title;
+  content.innerHTML = html;
+  dialog.showModal();
+
+  content.querySelectorAll("[data-open-file]").forEach(button => {
+    button.addEventListener("click", () => openStoredFile(button.dataset.openFile));
+  });
+}
+
 function renderProfileHistory(operator) {
   const container = getElement("profileHistory");
   if (!container) return;
@@ -1075,10 +1210,15 @@ function renderProfileHistory(operator) {
 
   container.innerHTML = records.length
     ? records.map(record => `
-        <div class="profile-record-item">
+        <div class="profile-record-item clickable-record" data-history-detail="${escapeHtml(record.id)}">
           <div>
             <strong>${escapeHtml(record.type || "Capacitación")} · ${escapeHtml(record.machine || "General")}</strong>
             <small>${formatDate(record.date)} · Responsable: ${escapeHtml(record.responsible || "Sin registrar")}</small>
+            <small>
+              ${record.level ? `Nivel ${record.level}` : "Sin nivel"}
+              · ${escapeHtml(record.result || "Sin resultado")}
+              ${record.file?.name ? `· Archivo: ${escapeHtml(record.file.name)}` : ""}
+            </small>
             <small>${escapeHtml(record.description || "")}</small>
           </div>
 
@@ -1094,10 +1234,125 @@ function renderProfileHistory(operator) {
       `).join("")
     : `<div class="empty-state">No hay historial registrado.</div>`;
 
+  container.querySelectorAll("[data-history-detail]").forEach(row => {
+    row.addEventListener("click", event => {
+      if (event.target.closest("[data-delete-history]")) return;
+
+      const record = records.find(item => item.id === row.dataset.historyDetail);
+      if (!record) return;
+
+      openRecordDetail(
+        `${record.type || "Registro"} · ${record.machine || "General"}`,
+        `
+          <div class="record-detail-grid">
+            <div><span>Fecha</span><strong>${formatDate(record.date)}</strong></div>
+            <div><span>Máquina</span><strong>${escapeHtml(record.machine || "General")}</strong></div>
+            <div><span>Nivel evaluado</span><strong>${record.level ? `Nivel ${record.level}` : "No aplica"}</strong></div>
+            <div><span>Resultado</span><strong>${escapeHtml(record.result || "Sin resultado")}</strong></div>
+            <div><span>Responsable</span><strong>${escapeHtml(record.responsible || "Sin registrar")}</strong></div>
+            <div><span>Archivo</span><strong>${escapeHtml(record.file?.name || "Sin archivo")}</strong></div>
+          </div>
+          <div class="record-detail-notes">
+            <span>Descripción</span>
+            <p>${escapeHtml(record.description || "Sin descripción")}</p>
+          </div>
+          ${record.file?.id ? `
+            <button class="secondary-btn" type="button" data-open-file="${escapeHtml(record.file.id)}">
+              Abrir evidencia
+            </button>
+          ` : ""}
+        `
+      );
+    });
+  });
+
   container.querySelectorAll("[data-delete-history]").forEach(button => {
-    button.addEventListener("click", () => {
-      operator.trainingHistory = operator.trainingHistory.filter(item => item.id !== button.dataset.deleteHistory);
-      logChange("Eliminó registro de capacitación", operator.name, button.dataset.deleteHistory);
+    button.addEventListener("click", async () => {
+      const record = operator.trainingHistory.find(item => item.id === button.dataset.deleteHistory);
+      if (!record) return;
+      if (!window.confirm("¿Eliminar este registro de capacitación o evaluación?")) return;
+
+      if (record.file?.id) await deleteLocalFile(record.file.id);
+      operator.trainingHistory = operator.trainingHistory.filter(item => item.id !== record.id);
+      logChange("Eliminó registro de capacitación", operator.name, record.id);
+      saveState();
+      renderAll();
+    });
+  });
+}
+
+function renderProfileDocuments(operator) {
+  const container = getElement("profileDocuments");
+  if (!container) return;
+
+  const documents = [...(operator.documents || [])]
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+  container.innerHTML = documents.length
+    ? documents.map(documentRecord => `
+        <div class="profile-record-item clickable-record" data-document-detail="${escapeHtml(documentRecord.id)}">
+          <div>
+            <strong>${escapeHtml(documentRecord.type)} · ${escapeHtml(documentRecord.name)}</strong>
+            <small>${formatDate(documentRecord.date)} · Responsable: ${escapeHtml(documentRecord.responsible)}</small>
+            <small>
+              Archivo: ${escapeHtml(documentRecord.file?.name || "Sin archivo")}
+              ${documentRecord.expiration ? `· Vence: ${formatDate(documentRecord.expiration)}` : ""}
+            </small>
+          </div>
+
+          <button
+            class="icon-btn"
+            data-delete-document="${escapeHtml(documentRecord.id)}"
+            type="button"
+            aria-label="Eliminar documento"
+          >
+            ×
+          </button>
+        </div>
+      `).join("")
+    : `<div class="empty-state">No hay documentos registrados.</div>`;
+
+  container.querySelectorAll("[data-document-detail]").forEach(row => {
+    row.addEventListener("click", event => {
+      if (event.target.closest("[data-delete-document]")) return;
+
+      const documentRecord = documents.find(item => item.id === row.dataset.documentDetail);
+      if (!documentRecord) return;
+
+      openRecordDetail(
+        documentRecord.name,
+        `
+          <div class="record-detail-grid">
+            <div><span>Tipo</span><strong>${escapeHtml(documentRecord.type)}</strong></div>
+            <div><span>Fecha</span><strong>${formatDate(documentRecord.date)}</strong></div>
+            <div><span>Responsable</span><strong>${escapeHtml(documentRecord.responsible)}</strong></div>
+            <div><span>Vencimiento</span><strong>${documentRecord.expiration ? formatDate(documentRecord.expiration) : "Sin vencimiento"}</strong></div>
+            <div><span>Archivo</span><strong>${escapeHtml(documentRecord.file?.name || "Sin archivo")}</strong></div>
+            <div><span>Tamaño</span><strong>${documentRecord.file?.size ? fileSizeLabel(documentRecord.file.size) : "—"}</strong></div>
+          </div>
+          <div class="record-detail-notes">
+            <span>Observaciones</span>
+            <p>${escapeHtml(documentRecord.notes || "Sin observaciones")}</p>
+          </div>
+          ${documentRecord.file?.id ? `
+            <button class="secondary-btn" type="button" data-open-file="${escapeHtml(documentRecord.file.id)}">
+              Abrir documento
+            </button>
+          ` : ""}
+        `
+      );
+    });
+  });
+
+  container.querySelectorAll("[data-delete-document]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const documentRecord = operator.documents.find(item => item.id === button.dataset.deleteDocument);
+      if (!documentRecord) return;
+      if (!window.confirm(`¿Eliminar el documento "${documentRecord.name}"?`)) return;
+
+      if (documentRecord.file?.id) await deleteLocalFile(documentRecord.file.id);
+      operator.documents = operator.documents.filter(item => item.id !== documentRecord.id);
+      logChange("Eliminó documento", operator.name, documentRecord.name);
       saveState();
       renderAll();
     });
@@ -1488,6 +1743,7 @@ if (operatorForm && operatorDialog) {
         scores,
         certifications: {},
         trainingHistory: [],
+        documents: [],
         developmentPlan: []
       });
 
@@ -1694,26 +1950,124 @@ getElement("certificationForm")?.addEventListener("submit", event => {
   getElement("certificationDialog").close();
 });
 
-getElement("trainingHistoryForm")?.addEventListener("submit", event => {
+getElement("trainingHistoryForm")?.addEventListener("submit", async event => {
   if (!event.submitter || event.submitter.value === "cancel") return;
   event.preventDefault();
 
   const operator = state.operators.find(item => item.id === state.selectedOperatorId);
   if (!operator) return;
 
+  const machine = getElement("historyMachine").value;
+  const level = Number(getElement("historyLevel").value);
+  const result = getElement("historyResult").value;
+  const selectedFile = getElement("historyFile")?.files?.[0] || null;
+
+  if (!machine) {
+    window.alert("Selecciona la máquina relacionada con la capacitación o evaluación.");
+    return;
+  }
+
+  if (!Number.isInteger(level) || level < 1 || level > 4) {
+    window.alert("Selecciona el nivel evaluado.");
+    return;
+  }
+
+  if (!result) {
+    window.alert("Selecciona el resultado de la evaluación.");
+    return;
+  }
+
+  let storedFile = null;
+
+  try {
+    storedFile = await saveLocalFile(selectedFile, "training-history", operator.id);
+  } catch (error) {
+    console.error(error);
+    window.alert("No fue posible guardar el archivo. El registro no fue creado.");
+    return;
+  }
+
+  const oldLevel = Number(operator.scores?.[machine] ?? 0);
+  let matrixMessage = "La matriz no fue modificada.";
+
+  if (result === "Apto") {
+    if (level > oldLevel) {
+      operator.scores[machine] = level;
+      matrixMessage = `Matriz actualizada: ${machine}, Nivel ${oldLevel} → Nivel ${level}.`;
+    } else if (level === oldLevel) {
+      matrixMessage = `El operador ya se encontraba en Nivel ${level}.`;
+    } else {
+      matrixMessage = `Se conservó el Nivel ${oldLevel} porque es superior al nivel evaluado.`;
+    }
+  }
+
   operator.trainingHistory.push({
     id: uid("HIST"),
     date: getElement("historyDate").value,
     type: getElement("historyType").value,
-    machine: getElement("historyMachine").value,
+    machine,
+    level,
+    result,
     responsible: getElement("historyResponsible").value.trim(),
-    description: getElement("historyDescription").value.trim()
+    description: getElement("historyDescription").value.trim(),
+    file: storedFile
   });
 
-  logChange("Registró capacitación", operator.name, getElement("historyDescription").value.trim());
+  logChange(
+    result === "Apto" && level > oldLevel ? "Evaluó y actualizó competencia" : "Registró capacitación",
+    operator.name,
+    `${machine} · Nivel ${level} · ${result}. ${matrixMessage}`
+  );
+
   saveState();
   renderAll();
   getElement("trainingHistoryDialog").close();
+  window.alert(`Registro guardado correctamente.
+
+${matrixMessage}`);
+});
+
+getElement("operatorDocumentForm")?.addEventListener("submit", async event => {
+  if (!event.submitter || event.submitter.value === "cancel") return;
+  event.preventDefault();
+
+  const operator = state.operators.find(item => item.id === state.selectedOperatorId);
+  if (!operator) return;
+
+  const selectedFile = getElement("operatorDocumentFile")?.files?.[0];
+
+  if (!selectedFile) {
+    window.alert("Selecciona el archivo que deseas guardar.");
+    return;
+  }
+
+  let storedFile;
+
+  try {
+    storedFile = await saveLocalFile(selectedFile, "operator-document", operator.id);
+  } catch (error) {
+    console.error(error);
+    window.alert("No fue posible guardar el documento en este navegador.");
+    return;
+  }
+
+  const documentRecord = {
+    id: uid("DOC"),
+    type: getElement("operatorDocumentType").value,
+    date: getElement("operatorDocumentDate").value,
+    name: getElement("operatorDocumentName").value.trim(),
+    expiration: getElement("operatorDocumentExpiration").value,
+    responsible: getElement("operatorDocumentResponsible").value.trim(),
+    notes: getElement("operatorDocumentNotes").value.trim(),
+    file: storedFile
+  };
+
+  operator.documents.push(documentRecord);
+
+  logChange("Subió documento", operator.name, `${documentRecord.type}: ${documentRecord.name}`);
+  saveState();
+  renderAll();
+  getElement("operatorDocumentDialog").close();
 });
 
 getElement("developmentPlanForm")?.addEventListener("submit", event => {
@@ -1823,7 +2177,7 @@ function exportBackup() {
   downloadText(
     `CNC_Skills_Backup_${today()}.json`,
     JSON.stringify({
-      version: "1.0",
+      version: "1.1",
       exportedAt: nowIso(),
       machines: state.machines,
       operators: state.operators,
@@ -1889,13 +2243,20 @@ getElement("editOperatorBtn")?.addEventListener("click", () => {
   if (state.selectedOperatorId) openEditOperatorDialog(state.selectedOperatorId);
 });
 
-getElement("deleteOperatorBtn")?.addEventListener("click", () => {
+getElement("deleteOperatorBtn")?.addEventListener("click", async () => {
   const operator = state.operators.find(item => item.id === state.selectedOperatorId);
   if (!operator) return;
 
   if (!window.confirm(
     `¿Deseas eliminar a ${operator.name} (${operator.id})?\n\nEsta acción no se puede deshacer.`
   )) return;
+
+  const relatedFileIds = [
+    ...(operator.trainingHistory || []).map(item => item.file?.id),
+    ...(operator.documents || []).map(item => item.file?.id)
+  ].filter(Boolean);
+
+  await Promise.all(relatedFileIds.map(fileId => deleteLocalFile(fileId).catch(console.error)));
 
   state.operators = state.operators.filter(item => item.id !== operator.id);
   logChange("Eliminó operador", operator.name, operator.id);
@@ -1932,10 +2293,23 @@ getElement("addTrainingHistoryBtn")?.addEventListener("click", () => {
 
   const form = getElement("trainingHistoryForm");
   form.reset();
-  populateMachineSelect("historyMachine", true);
+  populateMachineSelect("historyMachine", false);
   getElement("historyDate").value = today();
   getElement("historyResponsible").value = operator.supervisor;
+  getElement("historyLevel").value = "";
+  getElement("historyResult").value = "";
   getElement("trainingHistoryDialog").showModal();
+});
+
+getElement("addOperatorDocumentBtn")?.addEventListener("click", () => {
+  const operator = state.operators.find(item => item.id === state.selectedOperatorId);
+  if (!operator) return;
+
+  const form = getElement("operatorDocumentForm");
+  form.reset();
+  getElement("operatorDocumentDate").value = today();
+  getElement("operatorDocumentResponsible").value = operator.supervisor;
+  getElement("operatorDocumentDialog").showModal();
 });
 
 getElement("addDevelopmentPlanBtn")?.addEventListener("click", () => {
